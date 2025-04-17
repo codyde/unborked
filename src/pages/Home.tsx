@@ -1,0 +1,90 @@
+import { useEffect, useState } from 'react';
+import ProductCard from '../components/ProductCard';
+import { Product } from '../types';
+import { productService } from '../services/api';
+
+function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await productService.getProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load products. Please try again.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Sentry is configured but examples are removed
+
+  return (
+    <>
+      {/* Hero Section */}
+      <div className="relative h-[600px] overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=1600)',
+            filter: 'brightness(0.7)'
+          }}
+        />
+        <div className="relative max-w-7xl mx-auto h-full flex items-center px-4">
+          <div className="max-w-xl">
+            <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+              Debug Your Wardrobe with Developer Swag
+            </h1>
+            <p className="text-xl text-gray-200 mb-8">
+              Elevate your coding game with our collection of tech-inspired apparel and accessories. 
+              Because even your wardrobe deserves a proper deployment.
+            </p>
+            <button className="bg-[#39ff14] text-[#1a1a2e] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-[#1a1a2e] transition-colors duration-300">
+              Shop Collection
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto py-16 px-4">
+
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Featured Products
+        </h2>
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#39ff14]"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-10">
+            <h2 className="text-2xl font-bold mb-4">Error</h2>
+            <p className="text-red-500">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="mt-4 bg-[#1a1a2e] text-white px-4 py-2 rounded hover:bg-[#39ff14] hover:text-[#1a1a2e]"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </main>
+    </>
+  );
+}
+
+export default Home;
