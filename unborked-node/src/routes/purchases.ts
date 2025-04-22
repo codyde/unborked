@@ -15,6 +15,7 @@ interface AuthRequest extends Request {
 }
 
 const router = express.Router();
+const { debug, info, warn, error, fmt } = Sentry.logger;
 
 // Create a new purchase
 router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
@@ -32,10 +33,12 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   },
   async (span) => {
   
+  info(fmt`Attempting to create purchase for user ID: ${req.user?.userId || 'N/A'}`);
   try {
     const { items, total } = req.body;
     
     if (!req.user) {
+      warn('Purchase creation failed: User not authenticated.');
       span?.setAttributes({
         'error': true,
         'error.type': 'unauthorized'
@@ -46,8 +49,10 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     
     const userId = req.user.userId;
     span?.setAttribute('user.id', userId);
+    info(fmt`User authenticated for purchase: ${userId}`); // Log successful auth check
 
     if (!items || !total) {
+      warn(fmt`Purchase creation failed for user ${userId}: Missing required fields (items, total).`);
       span?.setAttributes({
         'error': true,
         'error.type': 'validation_failed'
@@ -56,6 +61,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Items and total are required' });
     }
 
+    debug(fmt`Inserting purchase for user ${userId} into database`);
     const [purchase] = await db.insert(purchases).values({
       userId,
       items,
@@ -63,21 +69,23 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     }).returning();
 
     span?.setAttribute('purchase.id', purchase.id);
-    
+    info(fmt`Successfully created purchase ID: ${purchase.id} for user ID: ${userId}`);
+
 
     res.status(201).json({
       message: 'Purchase successful',
       purchase
     });
-  } catch (error) {
-    console.error('Error creating purchase:', error);
+  } catch (err: any) {
+    error(fmt`Error creating purchase for user ${req.user?.userId || 'N/A'}: ${err.message}`, { stack: err.stack });
     span?.setAttributes({
       'error': true,
-      'error.message': error instanceof Error ? error.message : 'Unknown error'
+      'error.message': err instanceof Error ? err.message : 'Unknown error'
     });
     
-    Sentry.captureException(error);
+    Sentry.captureException(err);
     res.status(500).json({ error: 'Failed to process purchase' });
+    // No throw needed here as it's the end of the request flow
   }
     }
   );
@@ -97,8 +105,10 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   },
   async (span) => {
   
+  info(fmt`Attempting to fetch purchase history for user ID: ${req.user?.userId || 'N/A'}`);
   try {
     if (!req.user) {
+      warn('Purchase history fetch failed: User not authenticated.');
       span?.setAttributes({
         'error': true,
         'error.type': 'unauthorized'
@@ -109,22 +119,26 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     
     const userId = req.user.userId;
     span?.setAttribute('user.id', userId);
-    
+    info(fmt`User authenticated for purchase history: ${userId}`); // Log successful auth check
+
+    debug(fmt`Fetching purchase history for user ${userId} from database`);
     const userPurchases = await db.select().from(purchases).where(eq(purchases.userId, userId));
     
     span?.setAttribute('purchases.count', userPurchases.length);
-    
-    
+    info(fmt`Successfully fetched ${userPurchases.length} purchase(s) for user ID: ${userId}`);
+
+
     res.json(userPurchases);
-  } catch (error) {
-    console.error('Error fetching purchase history:', error);
+  } catch (err: any) {
+    error(fmt`Error fetching purchase history for user ${req.user?.userId || 'N/A'}: ${err.message}`, { stack: err.stack });
     span?.setAttributes({
       'error': true,
-      'error.message': error instanceof Error ? error.message : 'Unknown error'
+      'error.message': err instanceof Error ? err.message : 'Unknown error'
     });
     
-    Sentry.captureException(error);
+    Sentry.captureException(err);
     res.status(500).json({ error: 'Failed to fetch purchase history' });
+    // No throw needed here
   }
   }
   );

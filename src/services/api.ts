@@ -3,6 +3,24 @@ import { Product, User, Purchase, CartItem } from '../types';
 // Fix typo in API URL - 'loclahost' should be 'localhost'
 const API_URL = 'http://localhost:3000';
 
+// Function to get the value of a specific feature flag
+// Defaults to 'true' if flag is not found or fetch fails
+const getFeatureFlag = async (flagName: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_URL}/api/flags`);
+    if (!response.ok) {
+      console.error(`Failed to fetch flags, defaulting ${flagName} to true.`);
+      return true; // Default to true on fetch error
+    }
+    const flags: Record<string, boolean> = await response.json();
+    // Return flag value if found, otherwise default to true
+    return flags[flagName] !== undefined ? flags[flagName] : true;
+  } catch (error) {
+    console.error(`Error fetching flag ${flagName}, defaulting to true:`, error);
+    return true; // Default to true on any other error
+  }
+};
+
 // Authentication Services
 export const authService = {
   login: async (username: string, password: string): Promise<{ token: string; user: User }> => {
@@ -43,10 +61,17 @@ export const authService = {
 // Product Services
 export const productService = {
   getProducts: async (): Promise<Product[]> => {
-    const response = await fetch(`${API_URL}/products`);
+    // Check the feature flag
+    const useV2Query = await getFeatureFlag('STOREQUERY_V2');
+    const productsEndpoint = useV2Query ? `${API_URL}/products/v2` : `${API_URL}/products`;
+
+    console.log(`Fetching products using endpoint: ${productsEndpoint} (STOREQUERY_V2=${useV2Query})`);
+
+    const response = await fetch(productsEndpoint);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch products');
+      const errorData = await response.json().catch(() => ({})); // Try to get error details
+      throw new Error(`Failed to fetch products from ${productsEndpoint}: ${errorData.error || response.statusText}`);
     }
 
     return response.json();

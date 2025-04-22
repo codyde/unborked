@@ -4,6 +4,9 @@ import { ShoppingCart, ArrowLeft } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { productService } from '../services/api';
+import * as Sentry from '@sentry/react';
+
+const { info, fmt } = Sentry.logger;
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,10 +36,14 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (product) {
+      info(fmt`Adding product ID: ${product.id} (Name: ${product.name}) to cart from ProductDetail`);
       dispatch({
         type: 'ADD_ITEM',
         payload: { ...product, quantity: 1 },
       });
+    } else {
+      // Optionally log if add is attempted when product isn't loaded
+      // warn("Attempted to add to cart, but product details not loaded.");
     }
   };
 

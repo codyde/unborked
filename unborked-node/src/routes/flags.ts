@@ -21,6 +21,52 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Create a new feature flag
+router.post('/', async (req, res) => {
+  const { name, value = false, description = '' } = req.body;
+
+  if (!name || typeof name !== 'string') {
+    return res.status(400).json({ error: 'Flag name is required and must be a string' });
+  }
+  if (typeof value !== 'boolean') {
+    return res.status(400).json({ error: 'Value must be a boolean' });
+  }
+  if (description && typeof description !== 'string') {
+    return res.status(400).json({ error: 'Description must be a string' });
+  }
+
+  try {
+    // Check if flag already exists
+    const existingFlag = await db
+      .select()
+      .from(featureFlags)
+      .where(eq(featureFlags.name, name))
+      .limit(1);
+
+    if (existingFlag.length > 0) {
+      return res.status(409).json({ error: `Flag '${name}' already exists` });
+    }
+
+    // Insert new flag
+    const newFlag = await db
+      .insert(featureFlags)
+      .values({
+        name,
+        value,
+        description,
+        created_at: new Date(),
+        last_updated_at: new Date(),
+        last_updated_by: 'admin-menu@hoopshop.app', // Or get from authenticated user if available
+      })
+      .returning(); // Return the newly created flag
+
+    res.status(201).json(newFlag[0]);
+  } catch (error) {
+    console.error('Error creating feature flag:', error);
+    res.status(500).json({ error: 'Failed to create feature flag' });
+  }
+});
+
 // Update a single feature flag
 router.patch('/defaults/:flagName', async (req, res) => {
   const { flagName } = req.params;
@@ -68,6 +114,35 @@ router.patch('/defaults/:flagName', async (req, res) => {
   }
 });
 
+// Delete a feature flag
+router.delete('/:flagName', async (req, res) => {
+  const { flagName } = req.params;
+
+  try {
+    // Check if flag exists before attempting delete
+    const existingFlag = await db
+      .select({ id: featureFlags.id })
+      .from(featureFlags)
+      .where(eq(featureFlags.name, flagName))
+      .limit(1);
+
+    if (existingFlag.length === 0) {
+      return res.status(404).json({ error: `Flag '${flagName}' not found` });
+    }
+
+    // Delete the flag
+    await db.delete(featureFlags).where(eq(featureFlags.name, flagName));
+
+    // Optionally: Send a notification (e.g., to Sentry or logs)
+    // await sendSentryNotification(flagName, 'deleted', 'admin-menu@hoopshop.app', 'admin');
+
+    res.status(204).send(); // No content response for successful deletion
+  } catch (error) {
+    console.error('Error deleting feature flag:', error);
+    res.status(500).json({ error: 'Failed to delete feature flag' });
+  }
+});
+
 // Get flag descriptions
 router.get('/descriptions', async (req, res) => {
   try {
@@ -102,4 +177,4 @@ router.post('/notify-flag-change', async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

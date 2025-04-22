@@ -36,20 +36,19 @@ function Home() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url(https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=1600)',
-            filter: 'brightness(0.7)'
+            filter: 'brightness(0.6)'
           }}
         />
         <div className="relative max-w-7xl mx-auto h-full flex items-center px-4">
           <div className="max-w-xl">
-            <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
-              Debug Your Wardrobe with Developer Swag
+            <h1 className="text-6xl font-bold text-white mb-6 leading-tight">
+              Buggy code happens; Unbork it
             </h1>
-            <p className="text-xl text-gray-200 mb-8">
-              Elevate your coding game with our collection of tech-inspired apparel and accessories. 
-              Because even your wardrobe deserves a proper deployment.
+            <p className="text-2xl text-gray-200 mb-8">
+              Stop screaming in the void and pushing angry commit messages; get back to shipping good vibes today.
             </p>
             <button className="bg-[#39ff14] text-[#1a1a2e] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-[#1a1a2e] transition-colors duration-300">
-              Shop Collection
+              Shop Solutions
             </button>
           </div>
         </div>

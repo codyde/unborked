@@ -1,7 +1,6 @@
 import React from 'react';
 import HeaderV2 from './HeaderV2';
 // We'll create placeholder components for now and implement them later as needed
-import Home from '../../pages/Home';
 import Cart from '../../pages/Cart';
 import Login from '../../pages/Login';
 import Register from '../../pages/Register';
@@ -100,17 +99,17 @@ const CyberpunkHero: React.FC = () => {
             <div className="container mx-auto px-6">
               <div className="max-w-2xl">
                 <h1 className="text-5xl font-bold text-white tracking-tight mb-2 uppercase font-['Orbitron',sans-serif]">
-                  Debug Your <span className="text-[#00FFF1]">Wardrobe</span>
+                  Buggy code happens; Unbork it
                 </h1>
                 <h2 className="text-3xl font-bold text-[#FF003C] mb-4 font-['Orbitron',sans-serif]">with Developer Swag</h2>
                 <p className="text-gray-300 mb-8 max-w-md">
-                  Elevate your coding game with our collection of tech-inspired apparel and accessories. Because even your wardrobe deserves a proper deployment.
+                  Stop screaming in the void and pushing angry commit messages; get back to shipping good vibes today.
                 </p>
                 <button 
                   className="cybr-btn py-3 px-8 text-md"
                   onClick={scrollToProducts}
                 >
-                  SHOP COLLECTION
+                  SHOP SOLUTIONS
                 </button>
               </div>
             </div>

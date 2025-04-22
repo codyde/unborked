@@ -4,6 +4,9 @@ import { Minus, Plus, Trash2, CreditCard, ShoppingBag, AlertTriangle } from 'luc
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { purchaseService } from '../services/api';
+import * as Sentry from '@sentry/react';
+
+const { debug, info, warn, error, fmt } = Sentry.logger;
 
 function Cart() {
   const { state, dispatch } = useCart();
@@ -15,6 +18,7 @@ function Cart() {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
   const updateQuantity = (id: string, quantity: number) => {
+    info(fmt`Updating quantity for item ID: ${id} to ${quantity}`);
     if (quantity < 1) {
       dispatch({ type: 'REMOVE_ITEM', payload: id });
     } else {
@@ -23,6 +27,7 @@ function Cart() {
   };
 
   const removeItem = (id: string) => {
+    info(fmt`Removing item ID: ${id} from cart`);
     dispatch({ type: 'REMOVE_ITEM', payload: id });
   };
 
@@ -34,45 +39,54 @@ function Cart() {
   const total = subtotal + tax;
 
   const handleCheckout = async () => {
+    info('Checkout process initiated');
     if (!isAuthenticated) {
+      warn('Checkout attempt failed: User not authenticated.');
       navigate('/login', { state: { from: '/cart' } });
       return;
     }
 
+    info(fmt`User ${isAuthenticated ? 'is' : 'is not'} authenticated. Token ${token ? 'present' : 'absent'}.`)
+
     setIsCheckingOut(true);
     setCheckoutError(null);
+    setTransactionId(null); // Reset transaction ID on new attempt
+    setCheckoutSuccess(false); // Reset success state
 
     try {
       // Format cart items according to the API's expected structure
       const formattedItems = state.items.map(item => ({
-        productId: typeof item.id === 'string' ? parseInt(item.id) : item.id,
+        productId: typeof item.id === 'string' ? parseInt(item.id) : item.id, // Ensure ID is number if needed by API
         name: item.name,
         price: item.price,
         quantity: item.quantity
       }));
 
-      // For debugging
-      console.log('Sending purchase data:', {
+      const purchaseData = {
         items: formattedItems,
         total: total.toFixed(2)
-      });
+      };
+
+      debug(fmt`Sending purchase data to API for user token: ${token ? '...' : 'N/A'}`, purchaseData);
 
       const response = await purchaseService.createPurchase(
-        formattedItems,
-        total.toFixed(2),
-        token!
+        purchaseData.items,
+        purchaseData.total,
+        token! // Token is checked via isAuthenticated above
       );
-      
+
+      info(fmt`Checkout successful. Purchase ID: ${response.purchase.id}`);
       // Store transaction ID and show success message
       setTransactionId(response.purchase.id);
       setCheckoutSuccess(true);
-      
+
       // Clear cart
-      dispatch({ type: 'CLEAR_CART' });
-    } catch (error: any) {
-      console.error('Checkout error:', error);
-      setCheckoutError(error.message || 'Failed to process checkout');
+      dispatch({ type: 'CLEAR_CART' }); // Already logged in reducer
+    } catch (err: any) {
+      error(fmt`Checkout error: ${err.message}`, { stack: err.stack, errorObject: err });
+      setCheckoutError(err.message || 'Failed to process checkout');
     } finally {
+      info('Checkout process finished.');
       setIsCheckingOut(false);
     }
   };
@@ -107,7 +121,7 @@ function Cart() {
         <div className="text-center">
           <ShoppingBag className="w-24 h-24 mx-auto text-gray-300 mb-6" />
           <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-8">Time to debug your wardrobe!</p>
+          <p className="text-gray-600 mb-8">Looks like your cart needs unborking!</p>
           <Link
             to="/"
             className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"

@@ -1,8 +1,11 @@
 import React from 'react';
-import { ShoppingCart, Info } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
+
+const { info, fmt } = Sentry.logger;
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    info(fmt`Adding product ID: ${product.id} (Name: ${product.name}) to cart from ProductCard`);
     dispatch({
       type: 'ADD_ITEM',
       payload: { ...product, quantity: 1 },

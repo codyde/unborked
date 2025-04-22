@@ -1,85 +1,100 @@
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback, useMemo, useRef } from 'react';
 import { FeatureFlags, getCurrentFlagMap, fetchServerDefaults, getLocalStorage } from '../utils/featureFlags';
+import * as Sentry from '@sentry/react';
+
+const { error: logError, debug, fmt } = Sentry.logger;
 
 interface FeatureFlagsContextType {
   flags: FeatureFlags;
-  refreshFlagsFromSource: () => Promise<void>;
+  refreshFlagsFromSource: () => void;
   updateLocalFlag: (flagName: string, value: boolean) => void;
+  error: Error | null;
 }
 
-const FeatureFlagsContext = createContext<FeatureFlagsContextType | undefined>(undefined);
+const FeatureFlagsContext = createContext<FeatureFlagsContextType | null>(null);
 
 export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
   const [flags, setFlags] = useState<FeatureFlags>({} as FeatureFlags);
   const [serverDefaults, setServerDefaults] = useState<FeatureFlags>({} as FeatureFlags);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<Error | null>(null);
   const [flagsToEdit, setFlagsToEdit] = useState<FeatureFlags>({} as FeatureFlags);
   const [isInitialized, setIsInitialized] = useState(false);
-  
+  const isMounted = useRef(true);
+
   // Load flags once on initialization
   const refreshFlagsFromSource = useCallback(async () => {
     // Skip if already initialized to prevent multiple calls
     if (isInitialized && Object.keys(flags).length > 0) {
-      console.log("🚫 Flags already loaded, skipping initialization");
+      debug("🚫 Flags already loaded, skipping initialization");
       return;
     }
-    
+
     const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) console.log("🔄 Loading flags from source...");
-    
+    if (isLocalhost) debug("🔄 Loading flags from source...");
+
     try {
       // This will only fetch from server if needed
       const currentFlags = await getCurrentFlagMap();
-      if (isLocalhost) console.log("📊 Got flags:", currentFlags);
-      
-      // Set flags in state
-      setFlags({...currentFlags} as FeatureFlags);
-      
+      if (isLocalhost) debug("📊 Got flags:", currentFlags);
+
+      if (isMounted.current) {
+        setFlags({ ...currentFlags } as FeatureFlags);
+      }
+
       // Store server defaults if not already loaded
       if (Object.keys(serverDefaults).length === 0) {
         const defaults = await fetchServerDefaults();
-        setServerDefaults({...defaults});
+        if (isMounted.current) setServerDefaults({ ...defaults });
       }
-      
+
       // Mark as initialized so we don't fetch again
       setIsInitialized(true);
-      
-      if (isLocalhost) console.log("✅ Flags loaded successfully");
-    } catch (error) {
-      console.error("❌ Failed to load flags:", error);
-      setFlags({} as FeatureFlags);
+
+      if (isLocalhost) debug("✅ Flags loaded successfully");
+    } catch (err: any) {
+      if (isMounted.current) {
+        setLoadError(err instanceof Error ? err : new Error(String(err)));
+      }
+      logError(fmt`❌ Failed to load flags: ${err?.message}`, { stack: err?.stack, errorObject: err });
+    } finally {
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
   }, [flags, isInitialized, serverDefaults]);
 
   // Only handle local storage changes for toolbar overrides
-  const refreshFromLocalStorage = useCallback(() => {
+  const refreshFromLocalStorage = useCallback(async () => {
     const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) console.log("📱 Updating flags from localStorage overrides");
-    
+    if (isLocalhost) debug("📱 Updating flags from localStorage overrides");
+
     try {
       const overrides = getLocalStorage();
-      
-      setFlags(current => {
-        const mergedFlags = {
-          ...current,
-          ...overrides
-        } as FeatureFlags;
-        
-        if (isLocalhost) console.log("✅ Flags updated with localStorage overrides:", mergedFlags);
-        return mergedFlags;
-      });
-    } catch (error) {
-      console.error("❌ Failed to refresh from localStorage:", error);
+      // Store server defaults if not already loaded
+      if (Object.keys(serverDefaults).length === 0) {
+        const defaults = await fetchServerDefaults();
+        if (isMounted.current) setServerDefaults({ ...defaults });
+      }
+      const currentFlags = { ...serverDefaults, ...flags }; // Merge server defaults with current flags before overrides
+      const mergedFlags = {
+        ...currentFlags,
+        ...overrides
+      } as FeatureFlags;
+
+      if (isLocalhost) debug("✅ Flags updated with localStorage overrides:", mergedFlags);
+      if (isMounted.current) setFlags(mergedFlags);
+    } catch (err: any) {
+      logError(fmt`❌ Failed to refresh from localStorage: ${err?.message}`, { stack: err?.stack, errorObject: err });
     }
-  }, []);
+  }, [flags, serverDefaults]);
 
   // Direct update of a specific flag
   const updateLocalFlag = useCallback((flagName: string, value: boolean) => {
     const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) console.log(`🔄 Updating flag: ${flagName} = ${value}`);
-    
+    if (isLocalhost) debug(`🔄 Updating flag: ${flagName} = ${value}`);
+
     setFlags(current => ({
       ...current,
       [flagName]: value
@@ -96,14 +111,14 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'unborked-flag-overrides') {
         const isLocalhost = window.location.hostname === 'localhost';
-        if (isLocalhost) console.log("📢 Storage change detected, updating flags...");
-        
+        if (isLocalhost) debug("📢 Storage change detected, updating flags...");
+
         if (e.newValue !== e.oldValue) {
           refreshFromLocalStorage();
         }
       }
     };
-    
+
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [refreshFromLocalStorage]);
@@ -114,7 +129,7 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
       const { flagName, value } = e.detail;
       updateLocalFlag(flagName, value);
     };
-    
+
     window.addEventListener('flag-value-changed', handleFlagChange as EventListener);
     return () => window.removeEventListener('flag-value-changed', handleFlagChange as EventListener);
   }, [updateLocalFlag]);
@@ -124,7 +139,7 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
     if (isOpen) {
       const fetchCurrentDefaults = async () => {
         setIsLoading(true);
-        setError(null);
+        setLoadError(null);
         try {
           const response = await fetch('http://localhost:3000/api/flags');
           if (!response.ok) {
@@ -132,9 +147,9 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
           }
           const data = await response.json();
           setFlagsToEdit(data);
-        } catch (err) {
-          console.error("Error fetching flag defaults:", err);
-          setError(err instanceof Error ? err.message : "Unknown error fetching defaults");
+        } catch (err: any) {
+          logError(fmt`Error fetching flag defaults: ${err?.message}`, { stack: err?.stack, errorObject: err });
+          setLoadError(err instanceof Error ? err : new Error(String(err)));
         } finally {
           setIsLoading(false);
         }
@@ -145,8 +160,20 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
 
   // Memoize the context value to prevent unnecessary renders
   const contextValue = useMemo(() => {
-    return { flags, refreshFlagsFromSource, updateLocalFlag };
-  }, [flags, refreshFlagsFromSource, updateLocalFlag]);
+    return {
+      flags,
+      refreshFlagsFromSource,
+      updateLocalFlag,
+      error: loadError
+    };
+  }, [flags, refreshFlagsFromSource, updateLocalFlag, loadError]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <FeatureFlagsContext.Provider value={contextValue}>
@@ -157,8 +184,8 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
 
 export function useFeatureFlags() {
   const context = useContext(FeatureFlagsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useFeatureFlags must be used within a FeatureFlagsProvider');
   }
   return context;
-} 
+}
