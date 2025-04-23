@@ -5,27 +5,23 @@ import dotenv from 'dotenv';
 import routes from './routes';
 import * as Sentry from '@sentry/node';
 import { Request, Response, NextFunction } from 'express';
-import { migrateDatabase } from './db/migrate';
 import flagsRouter from './routes/flags';
 
 // Import Sentry logger functions
-const { debug, info, warn, error, fmt } = Sentry.logger;
+const { debug, info, error, fmt } = Sentry.logger;
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// CORS Configuration
 const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     if (!origin) return callback(null, true);
     if (origin === FRONTEND_URL) {
       callback(null, true);
     } else {
-      // Log CORS denial for debugging
       debug(fmt`CORS denied for origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
@@ -40,15 +36,12 @@ const corsOptions = {
   credentials: true
 };
 
-// Middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Request logging middleware - Using info level
 app.use((req: Request, res: Response, next: NextFunction) => {
   info(fmt`${req.method} ${req.url} - Request received`);
-  // Optional: Add more details like headers or body for debug level if needed
-  // debug(fmt`Request headers: ${JSON.stringify(req.headers)}`);
+  debug(fmt`Request headers: ${JSON.stringify(req.headers)}`);
   next();
 });
 
@@ -56,12 +49,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/', routes);
 app.use('/api/flags', flagsRouter);
 
-// Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  // Log the error details using Sentry logger
   error(fmt`Unhandled error occurred: ${err.message}`, { stack: err.stack });
 
-  // Capture error in Sentry (already present, which is good)
   Sentry.captureException(err);
   
   res.status(500).json({ 
@@ -70,28 +60,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Start server
 const startServer = async () => {
   try {
     info('🚀 Starting server...');
-    // Run migrations
-    // info('Running database migrations...');
-    // try {
-    //   await migrateDatabase();
-    //   info('✅ Database migrations completed successfully.');
-    // } catch (migrationError: any) {
-    //   // If error is because tables already exist, log as warning and continue
-    //   if (migrationError?.code === '42P07') {
-    //     warn('⚠️ Tables already exist, skipping migrations.');
-    //   } else {
-    //     error(fmt`❌ Migration error: ${migrationError.message}`, { stack: migrationError.stack });
-    //     // Re-throw the error to be caught by the outer catch block
-    //     throw migrationError;
-    //   }
-    // }
 
     // Start server
     app.listen(PORT, () => {
@@ -101,7 +74,7 @@ const startServer = async () => {
 
   } catch (startupError: any) {
     error(fmt`❌ Failed to start server: ${startupError.message}`, { stack: startupError.stack });
-    Sentry.captureException(startupError); // Capture startup errors too
+    Sentry.captureException(startupError);
     process.exit(1);
   }
 };
