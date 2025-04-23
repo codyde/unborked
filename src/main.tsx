@@ -17,10 +17,7 @@ Sentry.init({
       maskAllText: false,
       blockAllMedia: false,
     }),
-    Sentry.featureFlagsIntegration({
-      enableAutomaticPolling: false,
-      pollingIntervalSeconds: 0
-    }),
+    Sentry.featureFlagsIntegration(),
   ],
 
   tracesSampleRate: 1.0,
@@ -28,27 +25,23 @@ Sentry.init({
 
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
+  debug: true
 });
 
-const { debug, info, warn, error, fmt } = Sentry.logger;
+const { info, warn, error, fmt } = Sentry.logger;
 
 
-// Initialize the application with feature flags fully loaded before rendering
 (async () => {
   try {    
-    // First, fetch server defaults and set Sentry context
+    info(fmt`Initializing application...`);
     const serverDefaults = await fetchServerDefaults();
     
-    // Set each flag in Sentry
     Object.entries(serverDefaults).forEach(([flag, value]) => {
       setFeatureFlag(flag, Boolean(value)); 
     });
-    
-    // Ensure flags are fully initialized by calling getCurrentFlagMap
-    // This will block until initialization is complete
+
     await getCurrentFlagMap();
     
-    // Now that flags are fully initialized, render the app
     createRoot(document.getElementById('root')!).render(
       <>
         <App />
@@ -57,7 +50,6 @@ const { debug, info, warn, error, fmt } = Sentry.logger;
   } catch (err: any) {
     error(fmt`❌ Failed to initialize application: ${err.message}`, { stack: err.stack, errorObject: err });
     
-    // Render the app anyway, but with a warning
     warn(fmt`Rendering application without properly initialized feature flags: ${err.message}`, { stack: err.stack, errorObject: err });
     createRoot(document.getElementById('root')!).render(
       <>

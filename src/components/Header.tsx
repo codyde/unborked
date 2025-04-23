@@ -37,6 +37,7 @@ const Header: React.FC = () => {
           <Link
             to="/cart"
             className="relative hover:text-[#39ff14] transition-colors p-2"
+            data-testid="header-cart-button"
           >
             <ShoppingCart className="w-6 h-6" />
             {itemCount > 0 && (

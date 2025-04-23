@@ -4,7 +4,7 @@ import { authService } from '../services/api';
 import * as Sentry from '@sentry/react';
 
 // Only destructure used logger functions
-const { error: logError, fmt } = Sentry.logger;
+const { info, error: logError, fmt } = Sentry.logger;
 
 interface AuthContextType {
   user: User | null;
@@ -47,9 +47,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(response.token);
       setIsAuthenticated(true);
       
+      // --- Set Sentry user context ---
+      // info(fmt`Setting Sentry user context (frontend) for: ${response.user.username}`);
+      Sentry.setUser({
+        id: response.user.id,
+        username: response.user.username
+      });
+      // -----------------------------
+
       // Store in localStorage
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
+      info(fmt`Login successful for: ${response.user.username}`);
     } catch (err: any) {
       logError(fmt`Login error: ${err?.message}`, { stack: err?.stack, errorObject: err });
       setAuthError(err?.message || 'Login failed');
@@ -76,6 +85,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    // --- Clear Sentry user context ---
+    Sentry.setUser(null);
+    info('Cleared Sentry user context on logout.'); // Add log
+    // --------------------------------
+
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
