@@ -48,6 +48,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     }
     
     const userId = req.user.userId;
+    const username = req.user.username;
     span?.setAttribute('user.id', userId);
     info(fmt`User authenticated for purchase: ${userId}`); // Log successful auth check
 
@@ -71,7 +72,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     span?.setAttribute('purchase.id', purchase.id);
     info(fmt`Successfully created purchase ID: ${purchase.id} for user ID: ${userId}`);
 
-
+    info(fmt`${username} with user ID ${userId} successfully purchased ${items.length} items for ${total}`);
     res.status(201).json({
       message: 'Purchase successful',
       purchase

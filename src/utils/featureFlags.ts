@@ -5,6 +5,8 @@ export type FeatureFlags = {
   EXPERIMENTAL_CHECKOUT: boolean; // Enables the experimental checkout flow with enhanced UX and analytics
   DARK_MODE: boolean; // Activates dark mode across the entire application interface
   ADVANCED_FILTERING: boolean; // Enables advanced product filtering and sorting options in the catalog
+  STOREQUERY_V2: boolean; // Enables the V2 product query endpoint
+  GOODS_PRODUCTQUERY: boolean; // Enables the new goods product query endpoint
   [key: string]: boolean;
 };
 
@@ -22,7 +24,9 @@ let GLOBAL_FLAG_MAP: FlagMap = {
   UNBORKED_V2: false,
   EXPERIMENTAL_CHECKOUT: false,
   DARK_MODE: false,
-  ADVANCED_FILTERING: false
+  ADVANCED_FILTERING: false,
+  STOREQUERY_V2: false,
+  GOODS_PRODUCTQUERY: false
 };
 let IS_INITIALIZED = false;
 let INITIALIZATION_PROMISE: Promise<FlagMap> | null = null;
@@ -31,11 +35,6 @@ const MAX_LOGS = 5;
 
 const LOCALSTORAGE_KEY = 'unborked-flag-overrides';
 const API_ENDPOINT = 'http://localhost:3000/api/flags';
-
-// Cache control for getCurrentFlagMap
-let flagMapCache: FlagMap | null = null;
-let lastFetchTimestamp = 0;
-const CACHE_TTL = 60000; // Cache TTL of 1 minute
 
 // Global count for adapter calls - persists across all adapter instances
 let ADAPTER_CALL_COUNT = 0;
@@ -141,7 +140,7 @@ export async function getCurrentFlagMap(): Promise<FlagMap> {
   // Create initialization promise
   INITIALIZATION_PROMISE = (async () => {
     try {
-      // Fetch server defaults if needed
+      // 1. Fetch server defaults
       let defaults: FeatureFlags;
       if (Object.keys(serverDefaultFlags).length > 0) {
         defaults = serverDefaultFlags;
@@ -149,13 +148,39 @@ export async function getCurrentFlagMap(): Promise<FlagMap> {
         defaults = await fetchServerDefaults();
       }
       
-      // Get localStorage overrides
-      const overrides = getLocalStorage();
+      // 2. Get localStorage overrides
+      const localOverrides = getLocalStorage();
+
+      // 3. Get URL query parameter overrides
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlOverrides: FlagMap = {};
+      // Iterate over known flags or all keys in defaults
+      Object.keys(defaults).forEach(flagName => {
+          const paramValue = urlParams.get(flagName); // Case sensitive match for now
+          if (paramValue !== null) {
+              // Interpret 'true'/'1' as true, others as false
+              urlOverrides[flagName] = paramValue.toLowerCase() === 'true' || paramValue === '1';
+              if (isLocalhost && LOG_COUNT < MAX_LOGS) {
+                console.log(`URL override found: ${flagName}=${urlOverrides[flagName]}`);
+                LOG_COUNT++;
+              }
+          }
+      });
+      // Also check the specific new flag if not in defaults yet
+      const goodsQueryParam = urlParams.get('GOODS_PRODUCTQUERY');
+      if (goodsQueryParam !== null && !urlOverrides.hasOwnProperty('GOODS_PRODUCTQUERY')) {
+          urlOverrides['GOODS_PRODUCTQUERY'] = goodsQueryParam.toLowerCase() === 'true' || goodsQueryParam === '1';
+          if (isLocalhost && LOG_COUNT < MAX_LOGS) {
+            console.log(`URL override found: GOODS_PRODUCTQUERY=${urlOverrides['GOODS_PRODUCTQUERY']}`);
+            LOG_COUNT++;
+          }
+      }
       
-      // Merge them
+      // 4. Merge them (URL > LocalStorage > Defaults)
       const mergedFlags = {
         ...defaults,
-        ...overrides,
+        ...localOverrides,
+        ...urlOverrides, // URL overrides take highest precedence
       };
       
       // Store for toolbar
@@ -167,7 +192,7 @@ export async function getCurrentFlagMap(): Promise<FlagMap> {
       // Mark as initialized
       IS_INITIALIZED = true;
       
-      if (isLocalhost) console.log("✅ Feature flags initialized successfully:", GLOBAL_FLAG_MAP);
+      if (isLocalhost) console.log("✅ Feature flags initialized successfully (with URL overrides):", GLOBAL_FLAG_MAP);
       
       return GLOBAL_FLAG_MAP;
     } catch (error) {

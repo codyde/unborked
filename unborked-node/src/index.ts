@@ -78,20 +78,20 @@ const startServer = async () => {
   try {
     info('🚀 Starting server...');
     // Run migrations
-    info('Running database migrations...');
-    try {
-      await migrateDatabase();
-      info('✅ Database migrations completed successfully.');
-    } catch (migrationError: any) {
-      // If error is because tables already exist, log as warning and continue
-      if (migrationError?.code === '42P07') {
-        warn('⚠️ Tables already exist, skipping migrations.');
-      } else {
-        error(fmt`❌ Migration error: ${migrationError.message}`, { stack: migrationError.stack });
-        // Re-throw the error to be caught by the outer catch block
-        throw migrationError;
-      }
-    }
+    // info('Running database migrations...');
+    // try {
+    //   await migrateDatabase();
+    //   info('✅ Database migrations completed successfully.');
+    // } catch (migrationError: any) {
+    //   // If error is because tables already exist, log as warning and continue
+    //   if (migrationError?.code === '42P07') {
+    //     warn('⚠️ Tables already exist, skipping migrations.');
+    //   } else {
+    //     error(fmt`❌ Migration error: ${migrationError.message}`, { stack: migrationError.stack });
+    //     // Re-throw the error to be caught by the outer catch block
+    //     throw migrationError;
+    //   }
+    // }
 
     // Start server
     app.listen(PORT, () => {

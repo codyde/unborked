@@ -122,7 +122,7 @@ router.post('/login', async (req: Request, res: Response) => {
         }
 
         // Generate JWT token
-        debug(fmt`Generating JWT for user ID: ${user[0].id}`);
+        debug(fmt`Generating JWT for user ID: ${user[0].username}`);
         const token = jwt.sign(
           {
             userId: user[0].id,
@@ -133,7 +133,8 @@ router.post('/login', async (req: Request, res: Response) => {
         );
 
         span?.setAttribute('user.id', user[0].id);
-        info(fmt`User logged in successfully: ${username} (ID: ${user[0].id})`); // Log success
+        span?.setAttribute('user.username', user[0].username);
+        info(fmt`User logged in successfully: ${username} (ID: ${user[0].username})`); // Log success
 
         res.json({
           token,

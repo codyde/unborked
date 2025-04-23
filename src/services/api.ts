@@ -1,25 +1,8 @@
-import { Product, User, Purchase, CartItem } from '../types';
+import { Product, User, Purchase } from '../types';
+import { getCurrentFlagMap } from '../utils/featureFlags';
 
 // Fix typo in API URL - 'loclahost' should be 'localhost'
 const API_URL = 'http://localhost:3000';
-
-// Function to get the value of a specific feature flag
-// Defaults to 'true' if flag is not found or fetch fails
-const getFeatureFlag = async (flagName: string): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_URL}/api/flags`);
-    if (!response.ok) {
-      console.error(`Failed to fetch flags, defaulting ${flagName} to true.`);
-      return true; // Default to true on fetch error
-    }
-    const flags: Record<string, boolean> = await response.json();
-    // Return flag value if found, otherwise default to true
-    return flags[flagName] !== undefined ? flags[flagName] : true;
-  } catch (error) {
-    console.error(`Error fetching flag ${flagName}, defaulting to true:`, error);
-    return true; // Default to true on any other error
-  }
-};
 
 // Authentication Services
 export const authService = {
@@ -61,11 +44,23 @@ export const authService = {
 // Product Services
 export const productService = {
   getProducts: async (): Promise<Product[]> => {
-    // Check the feature flag
-    const useV2Query = await getFeatureFlag('STOREQUERY_V2');
-    const productsEndpoint = useV2Query ? `${API_URL}/products/v2` : `${API_URL}/products`;
+    // Check the feature flag using the central utility
+    const flags = await getCurrentFlagMap();
+    const useGoodsQuery = flags['GOODS_PRODUCTQUERY'] as boolean ?? false; // Check the new flag
+    const useV2Query = flags['STOREQUERY_V2'] as boolean ?? false; // Existing flag check
 
-    console.log(`Fetching products using endpoint: ${productsEndpoint} (STOREQUERY_V2=${useV2Query})`);
+    let productsEndpoint: string;
+    let flagUsed: string;
+
+    if (useGoodsQuery) {
+      productsEndpoint = `${API_URL}/product-query`;
+      flagUsed = `GOODS_PRODUCTQUERY=${useGoodsQuery}`;
+    } else {
+      productsEndpoint = useV2Query ? `${API_URL}/products/v2` : `${API_URL}/products`;
+      flagUsed = `STOREQUERY_V2=${useV2Query}`;
+    }
+
+    console.log(`Fetching products using endpoint: ${productsEndpoint} (${flagUsed})`);
 
     const response = await fetch(productsEndpoint);
 
