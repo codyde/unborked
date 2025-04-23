@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import { useAuth } from '../context/AuthContext';
 
 const { info, fmt } = Sentry.logger;
 
@@ -13,10 +14,18 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { dispatch } = useCart();
+  const { user } = useAuth();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (user) {
+      info(fmt`User '${user.username}' added item '${product.name}' (ID: ${product.id}) to cart.`);
+    } else {
+      info(fmt`Guest added item '${product.name}' (ID: ${product.id}) to cart.`);
+    }
+
     info(fmt`Adding product ID: ${product.id} (Name: ${product.name}) to cart from ProductCard`);
     dispatch({
       type: 'ADD_ITEM',
@@ -25,12 +34,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Link 
-      to={`/product/${product.id}`}
-      className="block no-underline text-inherit"
+    <div 
+      className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+      data-testid="product-card" 
     >
-      <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer">
-        <div className="relative">
+      <Link 
+        to={`/product/${product.id}`}
+        className="block no-underline text-inherit"
+      >
+        <div 
+          className="relative"
+        >
           <img
             src={product.image}
             alt={product.name}
@@ -39,23 +53,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity" />
         </div>
         <div className="p-4">
-          <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-          <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
-          <div className="flex items-center justify-between">
-            <span className="text-xl font-bold">${product.price}</span>
-            <div className="flex space-x-2">
-              <button
-                onClick={handleAddToCart}
-                className="bg-[#1a1a2e] text-white px-4 py-2 rounded flex items-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors z-10"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                <span>Add to Cart</span>
-              </button>
-            </div>
-          </div>
+          <h3 className="text-lg font-semibold mb-2 truncate">{product.name}</h3>
+          <p className="text-gray-600 mb-4">${parseFloat(product.price).toFixed(2)}</p>
         </div>
-      </div>
-    </Link>
+      </Link>
+      {user && (
+        <div className="px-4 pb-4 flex justify-end">
+          <button 
+            onClick={handleAddToCart}
+            data-testid="add-to-cart-button"
+            className="inline-flex items-center space-x-2 bg-[#1a1a2e] text-white py-2 px-4 rounded hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors duration-200"
+          >
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            <span>Add to Cart</span>
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 

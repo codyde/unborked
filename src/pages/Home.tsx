@@ -8,21 +8,21 @@ function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await productService.getProducts();
-        setProducts(data);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load products. Please try again.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await productService.getProducts();
+      setProducts(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load products. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -68,14 +68,17 @@ function Home() {
             <h2 className="text-2xl font-bold mb-4">Error</h2>
             <p className="text-red-500">{error}</p>
             <button 
-              onClick={() => window.location.reload()}
+              onClick={fetchProducts}
               className="mt-4 bg-[#1a1a2e] text-white px-4 py-2 rounded hover:bg-[#39ff14] hover:text-[#1a1a2e]"
             >
               Try Again
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            data-testid="product-grid"
+          >
             {products.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}

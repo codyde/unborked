@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, CreditCard, ShoppingBag, AlertTriangle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -150,6 +150,7 @@ function Cart() {
             <div
               key={item.id}
               className="bg-white rounded-lg shadow-md p-6 mb-4 flex items-center"
+              data-testid="cart-item"
             >
               <img
                 src={item.image}
@@ -208,6 +209,7 @@ function Cart() {
           <button
             onClick={handleCheckout}
             disabled={isCheckingOut}
+            data-testid="checkout-button"
             className="w-full mt-6 bg-[#1a1a2e] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CreditCard className="w-5 h-5" />
