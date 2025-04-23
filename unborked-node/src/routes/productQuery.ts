@@ -8,29 +8,29 @@ const router = express.Router();
 
 const {  debug, info, warn, error, fmt } = Sentry.logger;
 
-// Get all products (Efficient)
 router.get('/', async (_req: Request, res: Response) => {
-  // Start span for efficient product list
+
   return await Sentry.startSpan(
     {
       op: 'products.list.new',
       name: 'List Products',
       attributes: {
-        'endpoint': '/product-query', // Will change this later
+        'endpoint': '/product-query', 
         'method': 'GET'
       }
     },
     async (span) => {
       info('Fetching all goods');
       try {
-        // Efficient query - fetching all products at once
         const productRows = await db.execute(sql`SELECT * FROM goods`);
         const allProducts = productRows.rows;
 
         info(fmt`Goods: ${JSON.stringify(allProducts)}`);
 
         span.setAttribute('goods.count', allProducts.length);
+
         info(fmt`Successfully fetched ${allProducts.length} goods`);
+        
         res.json(allProducts);
         return allProducts;
       } catch (err: any) {
@@ -41,7 +41,7 @@ router.get('/', async (_req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to fetch goods' });
-        throw err; // Re-throw error after logging
+        throw err;
       }
     }
   );
@@ -53,7 +53,7 @@ router.get('/v2', async (_req: Request, res: Response) => {
       op: 'products.list.v2',
       name: 'List Products',
       attributes: {
-        'endpoint': '/product-query/v2', // Will change this later
+        'endpoint': '/product-query/v2', 
         'method': 'GET'
       }
     },
