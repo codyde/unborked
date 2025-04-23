@@ -1,5 +1,6 @@
 import { Product, User, Purchase } from '../types';
 import { getCurrentFlagMap } from '../utils/featureFlags';
+import * as Sentry from '@sentry/react';
 
 // Fix typo in API URL - 'loclahost' should be 'localhost'
 const API_URL = 'http://localhost:3000';
@@ -66,6 +67,7 @@ export const productService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({})); // Try to get error details
+      Sentry.captureException(new Error(`Failed to fetch products from ${productsEndpoint}: ${errorData.error || response.statusText}`));
       throw new Error(`Failed to fetch products from ${productsEndpoint}: ${errorData.error || response.statusText}`);
     }
 

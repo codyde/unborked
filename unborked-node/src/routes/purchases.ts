@@ -33,7 +33,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   },
   async (span) => {
   
-  info(fmt`Attempting to create purchase for user ID: ${req.user?.userId || 'N/A'}`);
+  info(fmt`Attempting to create purchase for username: ${req.user?.username || 'N/A'}`);
   try {
     const { items, total } = req.body;
     
@@ -78,7 +78,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
       purchase
     });
   } catch (err: any) {
-    error(fmt`Error creating purchase for user ${req.user?.userId || 'N/A'}: ${err.message}`, { stack: err.stack });
+    error(fmt`Error creating purchase for user ${req.user?.username || 'N/A'}: ${err.message}`, { stack: err.stack });
     span?.setAttributes({
       'error': true,
       'error.message': err instanceof Error ? err.message : 'Unknown error'
@@ -106,7 +106,7 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   },
   async (span) => {
   
-  info(fmt`Attempting to fetch purchase history for user ID: ${req.user?.userId || 'N/A'}`);
+  info(fmt`Attempting to fetch purchase history for username: ${req.user?.username || 'N/A'}`);
   try {
     if (!req.user) {
       warn('Purchase history fetch failed: User not authenticated.');
@@ -120,7 +120,7 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     
     const userId = req.user.userId;
     span?.setAttribute('user.id', userId);
-    info(fmt`User authenticated for purchase history: ${userId}`); // Log successful auth check
+    info(fmt`User authenticated for purchase history: ${req.user?.username || 'N/A'}`); // Log successful auth check
 
     debug(fmt`Fetching purchase history for user ${userId} from database`);
     const userPurchases = await db.select().from(purchases).where(eq(purchases.userId, userId));
@@ -131,7 +131,7 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
 
     res.json(userPurchases);
   } catch (err: any) {
-    error(fmt`Error fetching purchase history for user ${req.user?.userId || 'N/A'}: ${err.message}`, { stack: err.stack });
+    error(fmt`Error fetching purchase history for user ${req.user?.username || 'N/A'}: ${err.message}`, { stack: err.stack });
     span?.setAttributes({
       'error': true,
       'error.message': err instanceof Error ? err.message : 'Unknown error'

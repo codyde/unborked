@@ -30,7 +30,7 @@ router.get('/', async (_req: Request, res: Response) => {
         span.setAttribute('goods.count', allProducts.length);
 
         info(fmt`Successfully fetched ${allProducts.length} goods`);
-        
+
         res.json(allProducts);
         return allProducts;
       } catch (err: any) {
@@ -47,60 +47,15 @@ router.get('/', async (_req: Request, res: Response) => {
   );
 });
 
-router.get('/v2', async (_req: Request, res: Response) => {
-  return await Sentry.startSpan(
-    {
-      op: 'products.list.v2',
-      name: 'List Products',
-      attributes: {
-        'endpoint': '/product-query/v2', 
-        'method': 'GET'
-      }
-    },
-    async (span) => {
-      info('Fetching all products (V2)');
-      try {
-        debug('Fetching all product IDs');
-        const productIds = await db.select({ id: products.id }).from(products);
-        const allProducts = [];
-
-        debug(fmt`Starting query loop for ${productIds.length} products`);
-        for (const item of productIds) {
-          const product = await db.select().from(products).where(eq(products.id, item.id)).limit(1);
-          if (product.length > 0) {
-            allProducts.push(product[0]);
-          }
-        }
-
-        info(fmt`Products (v2): ${JSON.stringify(allProducts)}`);
-
-        span.setAttribute('products.count', allProducts.length);
-        info(fmt`Successfully fetched ${allProducts.length} products (V2)`);
-        res.json(allProducts);
-        return allProducts;
-      } catch (err: any) {
-        error(fmt`Error fetching products (V2): ${err.message}`, { stack: err.stack });
-        span.setAttributes({
-          'error': true,
-          'error.message': err instanceof Error ? err.message : 'Unknown error'
-        });
-        Sentry.captureException(err);
-        res.status(500).json({ error: 'Failed to fetch products (v2)' });
-        throw err; // Re-throw error after logging
-      }
-    }
-  );
-});
-
 // Get product by ID
 router.get('/:id', async (req: Request, res: Response) => {
-  // Start span for getting a single product
+  
   return await Sentry.startSpan(
     {
       op: 'products.get',
       name: 'Get Product',
       attributes: {
-        'endpoint': '/products/:id', // Will change this later
+        'endpoint': '/products/:id', 
         'method': 'GET',
         'product.id': req.params.id
       }
@@ -109,7 +64,6 @@ router.get('/:id', async (req: Request, res: Response) => {
       const productId = req.params.id;
       info(fmt`Fetching product by ID: ${productId}`);
       try {
-        // const { id } = req.params; // Already have productId
         debug(fmt`Querying database for product ID: ${productId}`);
         const product = await db.select().from(products).where(eq(products.id, parseInt(productId))).limit(1);
 
@@ -134,21 +88,20 @@ router.get('/:id', async (req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to fetch product' });
-        throw err; // Re-throw error after logging
+        throw err; 
       }
     }
   );
 });
 
-// Create a new product
+
 router.post('/', async (req: Request, res: Response) => {
-  // Start span for creating a product
   return await Sentry.startSpan(
     {
       op: 'products.create',
       name: 'Create Product',
       attributes: {
-        'endpoint': '/products', // Will change this later
+        'endpoint': '/products',
         'method': 'POST',
         'product.name': req.body.name,
         'product.category': req.body.category || 'uncategorized'
@@ -189,7 +142,7 @@ router.post('/', async (req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to create product' });
-        throw err; // Re-throw error after logging
+        throw err; 
       }
     }
   );

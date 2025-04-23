@@ -8,9 +8,7 @@ const router = express.Router();
 
 const {  debug, info, warn, error, fmt } = Sentry.logger;
 
-// Get all products (Efficient)
 router.get('/', async (_req: Request, res: Response) => {
-  // Start span for efficient product list
   return await Sentry.startSpan(
     {
       op: 'products.list.v1',
@@ -23,7 +21,6 @@ router.get('/', async (_req: Request, res: Response) => {
     async (span) => {
       info('Fetching all products (efficient V1)');
       try {
-        // Efficient query - fetching all products at once
         debug('Executing efficient product query');
         const productRows = await db.execute(sql`SELECT * FROM products`);
         const allProducts = productRows.rows;
@@ -42,7 +39,7 @@ router.get('/', async (_req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to fetch products' });
-        throw err; // Re-throw error after logging
+        throw err; 
       }
     }
   );
@@ -93,9 +90,7 @@ router.get('/v2', async (_req: Request, res: Response) => {
   );
 });
 
-// Get product by ID
 router.get('/:id', async (req: Request, res: Response) => {
-  // Start span for getting a single product
   return await Sentry.startSpan(
     {
       op: 'products.get',
@@ -110,7 +105,6 @@ router.get('/:id', async (req: Request, res: Response) => {
       const productId = req.params.id;
       info(fmt`Fetching product by ID: ${productId}`);
       try {
-        // const { id } = req.params; // Already have productId
         debug(fmt`Querying database for product ID: ${productId}`);
         const product = await db.select().from(products).where(eq(products.id, parseInt(productId))).limit(1);
 
@@ -135,15 +129,13 @@ router.get('/:id', async (req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to fetch product' });
-        throw err; // Re-throw error after logging
+        throw err;
       }
     }
   );
 });
 
-// Create a new product
 router.post('/', async (req: Request, res: Response) => {
-  // Start span for creating a product
   return await Sentry.startSpan(
     {
       op: 'products.create',
@@ -190,7 +182,7 @@ router.post('/', async (req: Request, res: Response) => {
         });
         Sentry.captureException(err);
         res.status(500).json({ error: 'Failed to create product' });
-        throw err; // Re-throw error after logging
+        throw err; 
       }
     }
   );

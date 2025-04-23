@@ -27,17 +27,12 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
   const refreshFlagsFromSource = useCallback(async () => {
     // Skip if already initialized to prevent multiple calls
     if (isInitialized && Object.keys(flags).length > 0) {
-      debug("🚫 Flags already loaded, skipping initialization");
       return;
     }
-
-    const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) debug("🔄 Loading flags from source...");
 
     try {
       // This will only fetch from server if needed
       const currentFlags = await getCurrentFlagMap();
-      if (isLocalhost) debug("📊 Got flags:", currentFlags);
 
       if (isMounted.current) {
         setFlags({ ...currentFlags } as FeatureFlags);
@@ -51,8 +46,6 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
 
       // Mark as initialized so we don't fetch again
       setIsInitialized(true);
-
-      if (isLocalhost) debug("✅ Flags loaded successfully");
     } catch (err: any) {
       if (isMounted.current) {
         setLoadError(err instanceof Error ? err : new Error(String(err)));
@@ -67,9 +60,6 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
 
   // Only handle local storage changes for toolbar overrides
   const refreshFromLocalStorage = useCallback(async () => {
-    const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) debug("📱 Updating flags from localStorage overrides");
-
     try {
       const overrides = getLocalStorage();
       // Store server defaults if not already loaded
@@ -83,7 +73,6 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
         ...overrides
       } as FeatureFlags;
 
-      if (isLocalhost) debug("✅ Flags updated with localStorage overrides:", mergedFlags);
       if (isMounted.current) setFlags(mergedFlags);
     } catch (err: any) {
       logError(fmt`❌ Failed to refresh from localStorage: ${err?.message}`, { stack: err?.stack, errorObject: err });
@@ -92,9 +81,6 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
 
   // Direct update of a specific flag
   const updateLocalFlag = useCallback((flagName: string, value: boolean) => {
-    const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) debug(`🔄 Updating flag: ${flagName} = ${value}`);
-
     setFlags(current => ({
       ...current,
       [flagName]: value
@@ -110,9 +96,6 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'unborked-flag-overrides') {
-        const isLocalhost = window.location.hostname === 'localhost';
-        if (isLocalhost) debug("📢 Storage change detected, updating flags...");
-
         if (e.newValue !== e.oldValue) {
           refreshFromLocalStorage();
         }

@@ -13,7 +13,10 @@ Sentry.init({
 
   integrations: [
     Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
     Sentry.featureFlagsIntegration({
       enableAutomaticPolling: false,
       pollingIntervalSeconds: 0
@@ -32,12 +35,9 @@ const { debug, info, warn, error, fmt } = Sentry.logger;
 
 // Initialize the application with feature flags fully loaded before rendering
 (async () => {
-  try {
-    info("🚀 Initializing application - loading feature flags...");
-    
+  try {    
     // First, fetch server defaults and set Sentry context
     const serverDefaults = await fetchServerDefaults();
-    info(fmt`Server defaults loaded: ${JSON.stringify(serverDefaults)}`);
     
     // Set each flag in Sentry
     Object.entries(serverDefaults).forEach(([flag, value]) => {
@@ -47,7 +47,6 @@ const { debug, info, warn, error, fmt } = Sentry.logger;
     // Ensure flags are fully initialized by calling getCurrentFlagMap
     // This will block until initialization is complete
     await getCurrentFlagMap();
-    info("✅ Feature flags fully initialized, rendering application");
     
     // Now that flags are fully initialized, render the app
     createRoot(document.getElementById('root')!).render(
