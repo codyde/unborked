@@ -43,12 +43,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthError(null);
     try {
       const response = await authService.login(username, password);
+      console.log(`Login successful for: ${username}`)
       setUser(response.user);
       setToken(response.token);
       setIsAuthenticated(true);
       
       // --- Set Sentry user context ---
-      // info(fmt`Setting Sentry user context (frontend) for: ${response.user.username}`);
+      info(fmt`Setting Sentry user context (frontend) for: ${response.user.username}`);
       Sentry.setUser({
         id: response.user.id,
         username: response.user.username

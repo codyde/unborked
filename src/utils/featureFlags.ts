@@ -7,6 +7,7 @@ export type FeatureFlags = {
   ADVANCED_FILTERING: boolean; // Enables advanced product filtering and sorting options in the catalog
   STOREQUERY_V2: boolean; // Enables the V2 product query endpoint
   GOODS_PRODUCTQUERY: boolean; // Enables the new goods product query endpoint
+  CARTAPI_V2: boolean; // Enables saving cart to database via API V2
   [key: string]: boolean;
 };
 
@@ -26,7 +27,8 @@ let GLOBAL_FLAG_MAP: FlagMap = {
   DARK_MODE: false,
   ADVANCED_FILTERING: false,
   STOREQUERY_V2: false,
-  GOODS_PRODUCTQUERY: false
+  GOODS_PRODUCTQUERY: false,
+  CARTAPI_V2: false
 };
 let IS_INITIALIZED = false;
 let INITIALIZATION_PROMISE: Promise<FlagMap> | null = null;

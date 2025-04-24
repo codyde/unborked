@@ -9,8 +9,8 @@ Sentry.init({
     _experiments: {
       enableLogs: true,
     },
+
     tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
-    debug: true
+    profilesSampleRate: 1.0
   });
 

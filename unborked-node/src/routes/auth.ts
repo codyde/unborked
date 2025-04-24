@@ -121,6 +121,14 @@ router.post('/login', async (req: Request, res: Response) => {
           return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        // --- Set Sentry user context ---
+        console.log(`Setting Sentry user context for: ${user[0].username}`); // Added console log
+        Sentry.setUser({
+          id: user[0].id, // Assuming user[0].id exists
+          username: user[0].username
+        });
+        // -----------------------------
+
         // Generate JWT token
         debug(fmt`Generating JWT for user ID: ${user[0].username}`);
         const token = jwt.sign(

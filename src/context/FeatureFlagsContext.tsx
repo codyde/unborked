@@ -9,6 +9,7 @@ interface FeatureFlagsContextType {
   refreshFlagsFromSource: () => void;
   updateLocalFlag: (flagName: string, value: boolean) => void;
   error: Error | null;
+  isInitialized: boolean;
 }
 
 const FeatureFlagsContext = createContext<FeatureFlagsContextType | null>(null);
@@ -147,9 +148,10 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
       flags,
       refreshFlagsFromSource,
       updateLocalFlag,
-      error: loadError
+      error: loadError,
+      isInitialized
     };
-  }, [flags, refreshFlagsFromSource, updateLocalFlag, loadError]);
+  }, [flags, refreshFlagsFromSource, updateLocalFlag, loadError, isInitialized]);
 
   useEffect(() => {
     isMounted.current = true;

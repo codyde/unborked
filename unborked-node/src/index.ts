@@ -13,8 +13,9 @@ const { debug, info, error, fmt } = Sentry.logger;
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 3001;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:4173';
 
 const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
@@ -46,7 +47,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Routes
-app.use('/', routes);
+app.use('/api', routes);
 app.use('/api/flags', flagsRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

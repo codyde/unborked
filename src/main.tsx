@@ -23,9 +23,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
   tracePropagationTargets: ["http://localhost:3000"],
 
-  replaysSessionSampleRate: 0.1,
+  replaysSessionSampleRate: 1.0,
   replaysOnErrorSampleRate: 1.0,
-  debug: true
+  // debug: true
 });
 
 const { info, warn, error, fmt } = Sentry.logger;
