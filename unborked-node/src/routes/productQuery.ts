@@ -22,8 +22,7 @@ router.get('/', async (_req: Request, res: Response) => {
     async (span) => {
       info('Fetching all goods');
       try {
-        const productRows = await db.execute(sql`SELECT * FROM goods`);
-        const allProducts = productRows.rows;
+        const allProducts = await db.select().from(products);
 
         info(fmt`Goods: ${JSON.stringify(allProducts)}`);
 
