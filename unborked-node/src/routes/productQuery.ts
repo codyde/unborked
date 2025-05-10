@@ -20,16 +20,15 @@ router.get('/', async (_req: Request, res: Response) => {
       }
     },
     async (span) => {
-      info('Fetching all goods');
+      info('Fetching all products');
       try {
-        const productRows = await db.execute(sql`SELECT * FROM goods`);
-        const allProducts = productRows.rows;
+        const allProducts = await db.select().from(products);
 
-        info(fmt`Goods: ${JSON.stringify(allProducts)}`);
+        info(fmt`Products: ${JSON.stringify(allProducts)}`);
 
-        span.setAttribute('goods.count', allProducts.length);
+        span.setAttribute('products.count', allProducts.length);
 
-        info(fmt`Successfully fetched ${allProducts.length} goods`);
+        info(fmt`Successfully fetched ${allProducts.length} products`);
 
         res.json(allProducts);
         return allProducts;
