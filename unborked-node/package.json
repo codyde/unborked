@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc && npm run sentry:sourcemaps",
-    "generate": "drizzle-kit generate:pg",
+    "generate": "drizzle-kit generate",
     "migrate": "ts-node src/db/migrate.ts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org buildwithcode --project unborked-server ./dist && sentry-cli sourcemaps upload --org buildwithcode --project unborked-server ./dist"
   },
@@ -18,7 +18,9 @@
     "@sentry/cli": "^2.43.0",
     "@sentry/node": "^9.12.0",
     "@sentry/profiling-node": "^9.12.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/pg": "^8.11.11",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.41.0",
@@ -27,6 +29,7 @@
     "pg": "^8.14.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.7.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",

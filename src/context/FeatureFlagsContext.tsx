@@ -125,7 +125,7 @@ export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         setLoadError(null);
         try {
-          const response = await fetch('http://localhost:3000/api/flags');
+          const response = await fetch('http://localhost:3001/api/flags');
           if (!response.ok) {
             throw new Error(`Failed to fetch defaults: ${response.statusText}`);
           }

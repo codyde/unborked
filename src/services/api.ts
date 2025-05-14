@@ -3,7 +3,7 @@ import { getCurrentFlagMap } from '../utils/featureFlags';
 import * as Sentry from '@sentry/react';
 
 // Use environment variable for base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'; // Fallback if not set
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'; // Fallback if not set
 
 // Authentication Services
 export const authService = {

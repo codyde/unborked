@@ -36,7 +36,7 @@ let LOG_COUNT = 0;
 const MAX_LOGS = 5;
 
 const LOCALSTORAGE_KEY = 'unborked-flag-overrides';
-const API_ENDPOINT = 'http://localhost:3000/api/flags';
+const API_ENDPOINT = 'http://localhost:3001/api/flags';
 
 // Global count for adapter calls - persists across all adapter instances
 let ADAPTER_CALL_COUNT = 0;

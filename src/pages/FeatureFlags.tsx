@@ -16,14 +16,14 @@ export default function FlagsDashboardPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const flagsResponse = await fetch('http://localhost:3000/api/flags');
+      const flagsResponse = await fetch('http://localhost:3001/api/flags');
       if (!flagsResponse.ok) {
         throw new Error(`Failed to fetch defaults: ${flagsResponse.statusText}`);
       }
       const flagsData = await flagsResponse.json();
       setFlagsToEdit(flagsData);
 
-      const descResponse = await fetch('http://localhost:3000/api/flags/descriptions');
+      const descResponse = await fetch('http://localhost:3001/api/flags/descriptions');
       if (!descResponse.ok) {
         throw new Error(`Failed to fetch descriptions: ${descResponse.statusText}`);
       }
@@ -54,7 +54,7 @@ export default function FlagsDashboardPage() {
     setFlagsToEdit(prev => ({ ...prev, [flagName]: newValue }));
 
     try {
-      const response = await fetch(`http://localhost:3000/api/flags/defaults/${flagName}`, {
+      const response = await fetch(`http://localhost:3001/api/flags/defaults/${flagName}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: newValue })
@@ -89,7 +89,7 @@ export default function FlagsDashboardPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/flags', {
+      const response = await fetch('http://localhost:3001/api/flags', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -126,7 +126,7 @@ export default function FlagsDashboardPage() {
     setDeletingFlag(flagName);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/flags/${flagName}`, {
+      const response = await fetch(`http://localhost:3001/api/flags/${flagName}`, {
         method: 'DELETE'
       });
 

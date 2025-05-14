@@ -14,20 +14,12 @@ dotenv.config();
 
 const app = express();
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:4173';
 
 const corsOptions = {
-  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    if (!origin) return callback(null, true);
-    if (origin === FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      debug(fmt`CORS denied for origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+  origin: 'http://localhost:4173',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type', 
     'Authorization',
@@ -60,8 +52,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     message: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
   });
 });
-
-app.options('*', cors(corsOptions));
 
 const startServer = async () => {
   try {
