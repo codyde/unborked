@@ -76,7 +76,7 @@ function AppV2() {
 // Create a component for the original design
 function AppV1() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-black text-white">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

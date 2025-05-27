@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+      className="bg-gray-900 border border-red-500 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
       data-testid="product-card" 
     >
       <Link 
@@ -53,8 +53,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity" />
         </div>
         <div className="p-4">
-          <h3 className="text-lg font-semibold mb-2 truncate">{product.name}</h3>
-          <p className="text-gray-600 mb-4">${parseFloat(product.price).toFixed(2)}</p>
+          <h3 className="text-lg font-semibold mb-2 truncate text-white">{product.name}</h3>
+          <p className="text-red-400 mb-4">${parseFloat(product.price).toFixed(2)}</p>
         </div>
       </Link>
       {user && (
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <button 
             onClick={handleAddToCart}
             data-testid="add-to-cart-button"
-            className="inline-flex items-center space-x-2 bg-[#1a1a2e] text-white py-2 px-4 rounded hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors duration-200"
+            className="inline-flex items-center space-x-2 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500 transition-colors duration-200"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             <span>Add to Cart</span>

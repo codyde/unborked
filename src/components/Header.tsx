@@ -19,16 +19,16 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-[#1a1a2e] text-white py-4 px-6 shadow-lg sticky top-0 z-50">
+    <header className="bg-black border-b border-red-500 text-white py-4 px-6 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2 hover:text-[#39ff14] transition-colors">
-          <Bug className="w-8 h-8 text-[#39ff14]" />
+        <Link to="/" className="flex items-center space-x-2 hover:text-red-400 transition-colors">
+          <Bug className="w-8 h-8 text-red-500" />
           <span className="text-2xl font-bold">Unborked</span>
         </Link>
         
         {/* Removed Home menu item - logo now serves as home link */}
         {isMenuOpen && (
-          <nav className="absolute top-full left-0 right-0 bg-[#1a1a2e] p-4">
+          <nav className="absolute top-full left-0 right-0 bg-black p-4">
             {/* Mobile menu items can be added here if needed */}
           </nav>
         )}
@@ -36,12 +36,12 @@ const Header: React.FC = () => {
         <div className="flex items-center space-x-4">
           <Link
             to="/cart"
-            className="relative hover:text-[#39ff14] transition-colors p-2"
+            className="relative hover:text-red-400 transition-colors p-2"
             data-testid="header-cart-button"
           >
             <ShoppingCart className="w-6 h-6" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#39ff14] text-[#1a1a2e] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                 {itemCount}
               </span>
             )}
@@ -50,17 +50,17 @@ const Header: React.FC = () => {
           {isAuthenticated ? (
             <div className="relative">
               <button
-                className="flex items-center space-x-1 hover:text-[#39ff14] transition-colors"
+                className="flex items-center space-x-1 hover:text-red-400 transition-colors"
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
               >
                 <User className="w-5 h-5" />
                 <span className="hidden md:block">{user?.username}</span>
               </button>
               {isProfileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 text-black z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-red-500 rounded-md shadow-lg py-1 text-white z-50">
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center px-4 py-2 text-sm hover:bg-gray-100"
+                    className="flex w-full items-center px-4 py-2 text-sm hover:bg-red-600"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
@@ -71,7 +71,7 @@ const Header: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className="flex items-center space-x-1 hover:text-[#39ff14] transition-colors"
+              className="flex items-center space-x-1 hover:text-red-400 transition-colors"
             >
               <LogIn className="w-5 h-5" />
               <span className="hidden md:block">Login</span>
