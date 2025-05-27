@@ -45,13 +45,13 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4">
+      <div className="max-w-md w-full space-y-8 bg-gray-900 border border-red-500 p-10 rounded-xl shadow-md">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-3xl font-extrabold text-white">Create your account</h2>
+          <p className="mt-2 text-gray-300">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#39ff14] hover:underline">
+            <Link to="/login" className="text-red-400 hover:underline">
               Sign in
             </Link>
           </p>
