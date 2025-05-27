@@ -157,18 +157,18 @@ export default function FlagsDashboardPage() {
   });
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-black min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-10">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Feature Flags Dashboard</h1>
-              <p className="mt-1 text-sm text-gray-500">Manage feature flags for the application.</p>
+              <h1 className="text-3xl font-bold text-white">Feature Flags Dashboard</h1>
+              <p className="mt-1 text-sm text-gray-300">Manage feature flags for the application.</p>
             </div>
             <button
               onClick={refreshFlags} 
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 border border-red-500 shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0115.357 2m0 0H15" />
@@ -192,11 +192,11 @@ export default function FlagsDashboardPage() {
             </div>
           )}
 
-          <div className="bg-white shadow rounded-md p-6 mb-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Feature Flag</h3>
+          <div className="bg-gray-900 border border-red-500 shadow rounded-md p-6 mb-8">
+            <h3 className="text-lg font-medium text-white mb-4">Create New Feature Flag</h3>
             <form onSubmit={handleCreateFlag} className="space-y-4">
               <div>
-                <label htmlFor="new-flag-name" className="block text-sm font-medium text-gray-700">Flag Name</label>
+                <label htmlFor="new-flag-name" className="block text-sm font-medium text-white">Flag Name</label>
                 <input
                   type="text"
                   id="new-flag-name"
@@ -204,50 +204,50 @@ export default function FlagsDashboardPage() {
                   onChange={(e) => setNewFlagName(e.target.value)}
                   placeholder="e.g., NEW_FEATURE_X"
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-600 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 />
               </div>
               <div>
-                <label htmlFor="new-flag-desc" className="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                <label htmlFor="new-flag-desc" className="block text-sm font-medium text-white">Description (Optional)</label>
                 <input
                   type="text"
                   id="new-flag-desc"
                   value={newFlagDescription}
                   onChange={(e) => setNewFlagDescription(e.target.value)}
                   placeholder="Describe what this flag controls"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-600 bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading || isCreating}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
               >
                 {isCreating ? 'Creating...' : 'Create Flag'}
               </button>
             </form>
           </div>
 
-          <div className="bg-white shadow overflow-hidden rounded-md">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-gray-900 border border-red-500 shadow overflow-hidden rounded-md">
+            <table className="min-w-full divide-y divide-red-500">
+              <thead className="bg-gray-800">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Description</th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gray-900 divide-y divide-red-500">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-300">
                       Loading flags...
                     </td>
                   </tr>
                 ) : filteredFlags.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-300">
                       No flags found matching your search.
                     </td>
                   </tr>
@@ -256,22 +256,22 @@ export default function FlagsDashboardPage() {
                     const isUpdatingThis = updatingFlag === name;
                     const isDeletingThis = deletingFlag === name;
                     return (
-                      <tr key={name} className={`${isUpdatingThis ? "bg-yellow-50" : isDeletingThis ? "bg-red-50 opacity-70" : ""}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <tr key={name} className={`${isUpdatingThis ? "bg-yellow-900" : isDeletingThis ? "bg-red-900 opacity-70" : ""}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                           {name}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${value ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${value ? 'bg-red-500 text-white' : 'bg-gray-700 text-gray-300'}`}>
                             {value ? 'Enabled' : 'Disabled'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-300">
                           {flagDescriptions[name] || '--'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end space-x-3">
                             <button
-                              className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${value ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                              className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${value ? 'bg-red-500' : 'bg-gray-600'}`}
                               onClick={() => handleToggle(name)}
                               disabled={isUpdatingThis || isDeletingThis}
                             >

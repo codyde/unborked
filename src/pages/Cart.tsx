@@ -95,7 +95,7 @@ function Cart() {
     return (
       <div className="max-w-7xl mx-auto py-16 px-4">
         <div className="text-center">
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 inline-flex items-center mx-auto">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 inline-flex items-center mx-auto">
             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
@@ -106,7 +106,7 @@ function Cart() {
           <p className="text-gray-600 mb-8">We've sent you a confirmation email with your order details.</p>
           <Link
             to="/"
-            className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"
+            className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
           >
             Continue Shopping
           </Link>
@@ -124,7 +124,7 @@ function Cart() {
           <p className="text-gray-600 mb-8">Looks like your cart needs unborking!</p>
           <Link
             to="/"
-            className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"
+            className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
           >
             Continue Shopping
           </Link>
@@ -149,7 +149,7 @@ function Cart() {
           {state.items.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow-md p-6 mb-4 flex items-center"
+              className="bg-gray-900 border border-red-500 rounded-lg shadow-md p-6 mb-4 flex items-center"
               data-testid="cart-item"
             >
               <img
@@ -158,21 +158,21 @@ function Cart() {
                 className="w-24 h-24 object-cover rounded"
               />
               <div className="ml-6 flex-grow">
-                <h3 className="text-lg font-semibold">{item.name}</h3>
-                <p className="text-gray-600">${item.price}</p>
+                <h3 className="text-lg font-semibold text-white">{item.name}</h3>
+                <p className="text-red-500">${item.price}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity - 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className="p-1 text-white hover:text-red-500"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="w-8 text-center">{item.quantity}</span>
+                  <span className="w-8 text-center text-white">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity + 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className="p-1 text-white hover:text-red-500"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -188,21 +188,21 @@ function Cart() {
           ))}
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 h-fit">
-          <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+        <div className="bg-gray-900 border border-red-500 rounded-lg shadow-md p-6 h-fit">
+          <h2 className="text-xl font-semibold mb-4 text-white">Order Summary</h2>
           <div className="space-y-3">
-            <div className="flex justify-between">
+            <div className="flex justify-between text-white">
               <span>Subtotal</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-white">
               <span>Tax (10%)</span>
               <span>${tax.toFixed(2)}</span>
             </div>
-            <div className="border-t pt-3">
-              <div className="flex justify-between font-semibold">
+            <div className="border-t border-red-500 pt-3">
+              <div className="flex justify-between font-semibold text-white">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span className="text-red-500">${total.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -210,7 +210,7 @@ function Cart() {
             onClick={handleCheckout}
             disabled={isCheckingOut}
             data-testid="checkout-button"
-            className="w-full mt-6 bg-[#1a1a2e] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-6 bg-red-500 text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CreditCard className="w-5 h-5" />
             <span>{isCheckingOut ? 'Processing...' : 'Checkout'}</span>
