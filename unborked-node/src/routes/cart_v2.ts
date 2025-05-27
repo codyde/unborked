@@ -4,6 +4,7 @@ import { userCarts } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { authenticateToken } from '../middleware/auth';
 import * as Sentry from '@sentry/node';
+import { fmt, info, warn, error } from '@sentry/node/build/types/log';
 
 // Define interface for authorized request with user
 interface AuthRequest extends Request {
@@ -15,7 +16,7 @@ interface AuthRequest extends Request {
 }
 
 const router = express.Router();
-const { debug, info, warn, error, fmt } = Sentry.logger;
+const { logger } = Sentry;    
 
 // GET user cart
 router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {

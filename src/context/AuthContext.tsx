@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('user', JSON.stringify(response.user));
       info(fmt`Login successful for: ${response.user.username}`);
     } catch (err: any) {
-      logError(fmt`Login error: ${err?.message}`, { stack: err?.stack, errorObject: err });
+      logError(fmt`Login error for ${username}: ${err?.message}`, { stack: err?.stack, errorObject: err });
       setAuthError(err?.message || 'Login failed');
       throw err;
     } finally {

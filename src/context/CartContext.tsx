@@ -75,7 +75,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''; // Default to empt
 const API_ENDPOINT = `${API_BASE_URL}/api/v2/cart`; 
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  info(fmt`CartProvider mounted. API Endpoint: ${API_ENDPOINT}`);
 
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
   const { isAuthenticated, token, user } = useAuth();
