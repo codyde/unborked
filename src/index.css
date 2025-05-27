@@ -46,22 +46,22 @@
 /* Neon glow animation */
 @keyframes neon-pulse {
   0% {
-    box-shadow: 0 0 5px #00FFF1, 0 0 10px #00FFF1;
+    box-shadow: 0 0 5px #FF0000, 0 0 10px #FF0000;
   }
   50% {
-    box-shadow: 0 0 10px #00FFF1, 0 0 20px #00FFF1;
+    box-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000;
   }
   100% {
-    box-shadow: 0 0 5px #00FFF1, 0 0 10px #00FFF1;
+    box-shadow: 0 0 5px #FF0000, 0 0 10px #FF0000;
   }
 }
 
 /* Cyberpunk button style */
 .cybr-btn {
   position: relative;
-  background: #0D0221;
-  border: 1px solid #00FFF1;
-  color: #00FFF1;
+  background: #000000;
+  border: 1px solid #FF0000;
+  color: #FF0000;
   padding: 0.5rem 1rem;
   font-family: 'Rajdhani', sans-serif;
   text-transform: uppercase;
@@ -71,8 +71,8 @@
 }
 
 .cybr-btn:hover {
-  background: #00FFF1;
-  color: #0D0221;
+  background: #FF0000;
+  color: #000000;
 }
 
 .cybr-btn::before {
@@ -82,28 +82,28 @@
   left: 2px;
   right: 2px;
   bottom: 2px;
-  border: 1px dashed #00FFF1;
+  border: 1px dashed #FF0000;
   opacity: 0.3;
   z-index: 1;
 }
 
 /* Neon text styles */
 .neon-text {
-  color: #00FFF1;
-  text-shadow: 0 0 5px #00FFF1, 0 0 10px #00FFF1;
+  color: #FF0000;
+  text-shadow: 0 0 5px #FF0000, 0 0 10px #FF0000;
   font-family: 'Orbitron', sans-serif;
 }
 
 .neon-text-danger {
-  color: #FF003C;
-  text-shadow: 0 0 5px #FF003C, 0 0 10px #FF003C;
+  color: #CC0000;
+  text-shadow: 0 0 5px #CC0000, 0 0 10px #CC0000;
   font-family: 'Orbitron', sans-serif;
 }
 
 /* Cyberpunk card with glowing border */
 .cybr-card {
-  background: #0D0221;
-  border: 1px solid #00FFF1;
+  background: #000000;
+  border: 1px solid #FF0000;
   position: relative;
   overflow: hidden;
 }
@@ -115,7 +115,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #00FFF1, transparent);
+  background: linear-gradient(90deg, transparent, #FF0000, transparent);
   animation: cybr-line 2s linear infinite;
 }
 
@@ -172,11 +172,11 @@
 
 /* Glass card component */
 .glass-card {
-  background: rgba(21, 21, 21, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(255, 0, 0, 0.2);
 }
 
 /* Gradient text */

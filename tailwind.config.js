@@ -75,9 +75,9 @@ export default {
           "100%": { transform: "translate(0)" },
         },
         "neon-pulse": {
-          "0%": { boxShadow: "0 0 5px #00FFF1, 0 0 10px #00FFF1" },
-          "50%": { boxShadow: "0 0 10px #00FFF1, 0 0 20px #00FFF1" },
-          "100%": { boxShadow: "0 0 5px #00FFF1, 0 0 10px #00FFF1" },
+          "0%": { boxShadow: "0 0 5px #FF0000, 0 0 10px #FF0000" },
+          "50%": { boxShadow: "0 0 10px #FF0000, 0 0 20px #FF0000" },
+          "100%": { boxShadow: "0 0 5px #FF0000, 0 0 10px #FF0000" },
         },
         "cybr-line": {
           "0%": { left: "-100%" },

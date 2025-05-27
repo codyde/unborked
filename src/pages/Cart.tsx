@@ -95,7 +95,7 @@ function Cart() {
     return (
       <div className="max-w-7xl mx-auto py-16 px-4">
         <div className="text-center">
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 inline-flex items-center mx-auto">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 inline-flex items-center mx-auto">
             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
@@ -106,7 +106,7 @@ function Cart() {
           <p className="text-gray-600 mb-8">We've sent you a confirmation email with your order details.</p>
           <Link
             to="/"
-            className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"
+            className="bg-[#000000] text-white px-6 py-3 rounded-lg hover:bg-[#FF0000] hover:text-[#000000] transition-colors"
           >
             Continue Shopping
           </Link>
@@ -124,7 +124,7 @@ function Cart() {
           <p className="text-gray-600 mb-8">Looks like your cart needs unborking!</p>
           <Link
             to="/"
-            className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"
+            className="bg-[#000000] text-white px-6 py-3 rounded-lg hover:bg-[#FF0000] hover:text-[#000000] transition-colors"
           >
             Continue Shopping
           </Link>
@@ -165,14 +165,14 @@ function Cart() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity - 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className="p-1 hover:text-[#FF0000]"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
                   <span className="w-8 text-center">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity + 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className="p-1 hover:text-[#FF0000]"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -210,7 +210,7 @@ function Cart() {
             onClick={handleCheckout}
             disabled={isCheckingOut}
             data-testid="checkout-button"
-            className="w-full mt-6 bg-[#1a1a2e] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-6 bg-[#000000] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#FF0000] hover:text-[#000000] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CreditCard className="w-5 h-5" />
             <span>{isCheckingOut ? 'Processing...' : 'Checkout'}</span>

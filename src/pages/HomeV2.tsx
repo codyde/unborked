@@ -52,19 +52,19 @@ function HomeV2() {
       {loading ? (
         <div className="flex justify-center items-center h-64 mt-8">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 border border-[#00FFF1] animate-pulse"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#00FFF1] font-mono text-xs">LOADING</div>
+            <div className="absolute inset-0 border border-[#FF0000] animate-pulse"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#FF0000] font-mono text-xs">LOADING</div>
           </div>
         </div>
       ) : error ? (
         <div className="container mx-auto px-6 py-16 text-center">
-          <div className="border border-[#FF003C] p-8 relative">
-            <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#FF003C]"></div>
-            <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#FF003C]"></div>
-            <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#FF003C]"></div>
-            <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#FF003C]"></div>
+          <div className="border border-[#CC0000] p-8 relative">
+            <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#CC0000]"></div>
+            <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#CC0000]"></div>
+            <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#CC0000]"></div>
+            <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#CC0000]"></div>
             
-            <h3 className="text-[#FF003C] uppercase font-['Orbitron',sans-serif] mb-4">ERROR.DETECTED</h3>
+            <h3 className="text-[#CC0000] uppercase font-['Orbitron',sans-serif] mb-4">ERROR.DETECTED</h3>
             <p className="text-gray-300 mb-6">{error}</p>
             <button 
               onClick={() => window.location.reload()}
