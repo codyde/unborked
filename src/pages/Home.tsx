@@ -47,7 +47,7 @@ function Home() {
             <p className="text-2xl text-gray-200 mb-8">
               Stop screaming in the void and pushing angry commit messages; get back to shipping good vibes today.
             </p>
-            <button className="bg-[#39ff14] text-[#1a1a2e] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-[#1a1a2e] transition-colors duration-300">
+            <button className="bg-red-500 text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition-colors duration-300">
               Shop Solutions
             </button>
           </div>
@@ -61,7 +61,7 @@ function Home() {
         </h2>
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#39ff14]"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-500"></div>
           </div>
         ) : error ? (
           <div className="text-center py-10">
@@ -69,7 +69,7 @@ function Home() {
             <p className="text-red-500">{error}</p>
             <button 
               onClick={fetchProducts}
-              className="mt-4 bg-[#1a1a2e] text-white px-4 py-2 rounded hover:bg-[#39ff14] hover:text-[#1a1a2e]"
+              className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-red-500 hover:text-black"
             >
               Try Again
             </button>
