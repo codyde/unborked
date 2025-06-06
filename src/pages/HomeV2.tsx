@@ -58,13 +58,13 @@ function HomeV2() {
         </div>
       ) : error ? (
         <div className="container mx-auto px-6 py-16 text-center">
-          <div className="border border-[#FF003C] p-8 relative">
-            <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#FF003C]"></div>
-            <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#FF003C]"></div>
-            <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#FF003C]"></div>
-            <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#FF003C]"></div>
+          <div className="border border-red-500 p-8 relative">
+            <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-red-500"></div>
+            <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-red-500"></div>
+            <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-red-500"></div>
+            <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-red-500"></div>
             
-            <h3 className="text-[#FF003C] uppercase font-['Orbitron',sans-serif] mb-4">ERROR.DETECTED</h3>
+            <h3 className="text-red-500 uppercase font-['Orbitron',sans-serif] mb-4">ERROR.DETECTED</h3>
             <p className="text-gray-300 mb-6">{error}</p>
             <button 
               onClick={() => window.location.reload()}

@@ -261,7 +261,7 @@ export default function FlagsDashboardPage() {
                           {name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${value ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${value ? 'bg-red-500/20 text-red-500' : 'bg-gray-100 text-gray-800'}`}>
                             {value ? 'Enabled' : 'Disabled'}
                           </span>
                         </td>

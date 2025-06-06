@@ -52,7 +52,7 @@ function AppV2() {
         
         {/* Hexagons */}
         <div className="absolute top-20 left-20 w-40 h-40 border border-[#00FFF1]/30 rotate-45"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 border border-[#FF003C]/30 rotate-45"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 border border-red-500/30 rotate-45"></div>
         <div className="absolute top-1/2 right-1/3 w-20 h-20 border border-[#7DF9FF]/30 rotate-45"></div>
         
         {/* Horizontal scan line effect */}
