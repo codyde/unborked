@@ -6,11 +6,12 @@ Sentry.init({
     integrations: [
       nodeProfilingIntegration(),
     ],
+
     _experiments: {
       enableLogs: true,
     },
+    debug: true,
 
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0
   });
-
