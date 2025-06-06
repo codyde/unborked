@@ -81,6 +81,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
       try {
         if (!req.user) {
           logger.warn('Save cart failed: User not authenticated.');
+          logger.debug(logger.fmt`Cache miss for user`, { userId: 123 });
           span?.setAttributes({ 'error': true, 'error.type': 'unauthorized' });
           return res.status(401).json({ error: 'User not authenticated' });
         }
