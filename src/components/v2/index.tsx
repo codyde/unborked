@@ -11,7 +11,7 @@ const CyberpunkContainer: React.FC<{ children: React.ReactNode }> = ({ children 
   <div className="w-full relative">
     {/* Circuit pattern background - global, lower opacity */}
     <div className="fixed inset-0 w-full h-full overflow-hidden opacity-5 pointer-events-none">
-      <div className="absolute inset-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0ibm9uZSIgLz4KPHBhdGggZD0iTTAgMCBMNTAgNTAgTTUwIDAgTDAgNTAgTTI1IDAgTDI1IDUwIE0wIDI1IEw1MCAyNSIgc3Ryb2tlPSIjMDBGRkYxIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8L3N2Zz4=')] bg-[length:50px_50px]"></div>
+      <div className="absolute inset-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0ibm9uZSIgLz4KPHBhdGggZD0iTTAgMCBMNTAgNTAgTTUwIDAgTDAgNTAgTTI1IDAgTDI1IDUwIE0wIDI1IEw1MCAyNSIgc3Ryb2tlPSIjMDBGRkYxIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8L3N2Zz4=')] bg-size-[50px_50px]"></div>
     </div>
     
     {/* Hexagon accents */}
@@ -50,7 +50,7 @@ const CyberpunkCard: React.FC<{
         {image && <img src={image} alt={title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />}
         
         {/* Overlay decoration */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0221] to-transparent opacity-70"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-[#0D0221] to-transparent opacity-70"></div>
         <div className="absolute bottom-0 left-0 w-full h-px bg-[#00FFF1]"></div>
         <div className="absolute top-2 left-2 text-xs text-[#00FFF1] font-mono">ID://0x{Math.floor(Math.random() * 10000).toString().padStart(4, '0')}</div>
       </div>
@@ -88,7 +88,7 @@ const CyberpunkHero: React.FC = () => {
             backgroundImage: 'url(https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=1600)',
             filter: 'brightness(0.5)'
           }}></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0D0221] via-[#0D0221]/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-[#0D0221] via-[#0D0221]/70 to-transparent"></div>
           
           {/* Accent lines */}
           <div className="absolute bottom-0 left-0 w-full h-px bg-[#00FFF1]"></div>
