@@ -48,7 +48,7 @@ function AppV2() {
       {/* Animated circuit pattern background */}
       <div className="fixed inset-0 bg-[#0D0221] overflow-hidden opacity-10 pointer-events-none">
         {/* Circuit grid pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0ibm9uZSIgLz4KPHBhdGggZD0iTTAgMCBMNTAgNTAgTTUwIDAgTDAgNTAgTTI1IDAgTDI1IDUwIE0wIDI1IEw1MCAyNSIgc3Ryb2tlPSIjMDBGRkYxIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8L3N2Zz4=')] bg-[length:50px_50px]"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CjxyZWN0IHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0ibm9uZSIgLz4KPHBhdGggZD0iTTAgMCBMNTAgNTAgTTUwIDAgTDAgNTAgTTI1IDAgTDI1IDUwIE0wIDI1IEw1MCAyNSIgc3Ryb2tlPSIjMDBGRkYxIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8L3N2Zz4=')] bg-size-[50px_50px]"></div>
         
         {/* Hexagons */}
         <div className="absolute top-20 left-20 w-40 h-40 border border-[#00FFF1]/30 rotate-45"></div>
@@ -56,7 +56,7 @@ function AppV2() {
         <div className="absolute top-1/2 right-1/3 w-20 h-20 border border-[#7DF9FF]/30 rotate-45"></div>
         
         {/* Horizontal scan line effect */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-[#00FFF1]/50 animate-[scan-line_6s_linear_infinite]"></div>
+        <div className="absolute top-0 left-0 right-0 h-px bg-[#00FFF1]/50 animate-scan-line"></div>
       </div>
       
       <HeaderV2 />

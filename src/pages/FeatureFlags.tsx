@@ -168,7 +168,7 @@ export default function FlagsDashboardPage() {
             <button
               onClick={refreshFlags} 
               disabled={isLoading}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-xs text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0115.357 2m0 0H15" />
@@ -180,7 +180,7 @@ export default function FlagsDashboardPage() {
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
               <div className="flex">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
@@ -192,7 +192,7 @@ export default function FlagsDashboardPage() {
             </div>
           )}
 
-          <div className="bg-white shadow rounded-md p-6 mb-8">
+          <div className="bg-white shadow-sm rounded-md p-6 mb-8">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Feature Flag</h3>
             <form onSubmit={handleCreateFlag} className="space-y-4">
               <div>
@@ -204,7 +204,7 @@ export default function FlagsDashboardPage() {
                   onChange={(e) => setNewFlagName(e.target.value)}
                   placeholder="e.g., NEW_FEATURE_X"
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
               <div>
@@ -215,20 +215,20 @@ export default function FlagsDashboardPage() {
                   value={newFlagDescription}
                   onChange={(e) => setNewFlagDescription(e.target.value)}
                   placeholder="Describe what this flag controls"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading || isCreating}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
                 {isCreating ? 'Creating...' : 'Create Flag'}
               </button>
             </form>
           </div>
 
-          <div className="bg-white shadow overflow-hidden rounded-md">
+          <div className="bg-white shadow-sm overflow-hidden rounded-md">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -271,12 +271,12 @@ export default function FlagsDashboardPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end space-x-3">
                             <button
-                              className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${value ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                              className={`relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${value ? 'bg-indigo-600' : 'bg-gray-200'}`}
                               onClick={() => handleToggle(name)}
                               disabled={isUpdatingThis || isDeletingThis}
                             >
                               <span
-                                className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200 ${value ? 'translate-x-5' : 'translate-x-0'}`}>
+                                className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200 ${value ? 'translate-x-5' : 'translate-x-0'}`}>
                               </span>
                             </button>
                             {isUpdatingThis && (

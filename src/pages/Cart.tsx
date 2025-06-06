@@ -157,7 +157,7 @@ function Cart() {
                 alt={item.name}
                 className="w-24 h-24 object-cover rounded"
               />
-              <div className="ml-6 flex-grow">
+              <div className="ml-6 grow">
                 <h3 className="text-lg font-semibold">{item.name}</h3>
                 <p className="text-gray-600">${item.price}</p>
               </div>

@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             alt={product.name}
             className="w-full h-48 object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity" />
+          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-opacity" />
         </div>
         <div className="p-4">
           <h3 className="text-lg font-semibold mb-2 truncate">{product.name}</h3>
