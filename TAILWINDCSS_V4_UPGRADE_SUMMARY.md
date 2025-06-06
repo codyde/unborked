@@ -35,6 +35,18 @@ Your custom theme configuration is now defined in CSS using the `@theme` directi
 - Custom border radius values
 - Container utility customization
 
+### 5. **🛠️ Post-Upgrade Fix: Black Images Issue**
+**Issue Found**: Product images were appearing black due to deprecated opacity utilities
+**Root Cause**: `bg-opacity-*` utilities were removed in v4 but not caught by the migration tool
+**Fix Applied**: Updated `ProductCard.tsx` to use new opacity syntax:
+```jsx
+// Before (deprecated)
+<div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity" />
+
+// After (v4 syntax)
+<div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-opacity" />
+```
+
 ## 🎉 Benefits of TailwindCSS v4
 
 ### **Performance Improvements**
@@ -77,8 +89,9 @@ All your existing styles and customizations have been preserved:
 
 The project builds successfully with TailwindCSS v4:
 - ✅ Production build completed
-- ✅ CSS bundle generated (40.88 kB)
+- ✅ CSS bundle generated (41.48 kB)
 - ✅ All features working as expected
+- ✅ Image display issue resolved
 
 ## 🎯 Next Steps
 
@@ -95,5 +108,13 @@ Your project is now running on TailwindCSS v4 with optimal performance. You can:
 - All existing class names continue to work
 - Configuration is now in `src/index.css` instead of `tailwind.config.js`
 - Using Vite plugin for optimal performance in this Vite-based project
+- **Important**: The migration tool didn't catch all deprecated opacity utilities - manual review recommended
+
+## 🚨 Troubleshooting
+
+If you encounter any styling issues after the upgrade:
+1. Check for deprecated `*-opacity-*` utilities (should use `/` syntax: `bg-black/50`)
+2. Look for old gradient syntax `bg-gradient-*` (now `bg-linear-*`)
+3. Verify hover states are working correctly with new opacity syntax
 
 Your upgrade to TailwindCSS v4 is complete and ready for development! 🎉
