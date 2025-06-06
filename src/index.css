@@ -95,8 +95,8 @@
 }
 
 .neon-text-danger {
-  color: #FF003C;
-  text-shadow: 0 0 5px #FF003C, 0 0 10px #FF003C;
+  @apply text-red-500;
+  text-shadow: 0 0 5px theme('colors.red.500') , 0 0 10px theme('colors.red.500');
   font-family: 'Orbitron', sans-serif;
 }
 

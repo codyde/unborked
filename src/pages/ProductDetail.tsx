@@ -50,7 +50,7 @@ const ProductDetail: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#39ff14]"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-500"></div>
       </div>
     );
   }
@@ -60,7 +60,7 @@ const ProductDetail: React.FC = () => {
       <div className="text-center py-10">
         <h2 className="text-2xl font-bold mb-4">Error</h2>
         <p className="text-red-500">{error || 'Product not found'}</p>
-        <Link to="/" className="inline-block mt-4 text-[#39ff14] hover:underline">
+        <Link to="/" className="inline-block mt-4 text-red-500 hover:underline">
           Back to Products
         </Link>
       </div>
@@ -69,7 +69,7 @@ const ProductDetail: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Link to="/" className="inline-flex items-center text-[#39ff14] hover:underline mb-6">
+      <Link to="/" className="inline-flex items-center text-red-500 hover:underline mb-6">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Products
       </Link>
@@ -93,7 +93,7 @@ const ProductDetail: React.FC = () => {
             <span className="text-3xl font-bold">${product.price}</span>
             <button
               onClick={handleAddToCart}
-              className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors"
+              className="bg-[#1a1a2e] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-red-500 hover:text-[#1a1a2e] transition-colors"
             >
               <ShoppingCart className="w-5 h-5" />
               <span>Add to Cart</span>
