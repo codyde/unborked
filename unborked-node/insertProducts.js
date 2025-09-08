@@ -1,194 +1,75 @@
 const { Client } = require('pg');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
 // Load environment variables from .env file
 dotenv.config();
 
-// Sample product data
-const sampleProducts = [
-  {
-    name: 'Syntax Error Shield',
-    description: 'Protect your code from syntax errors with real-time detection and correction.',
-    price: '19.99',
-    image: 'https://placehold.co/300x200?text=Syntax+Error+Shield',
-    category: 'Error Protection'
-  },
-  {
-    name: 'Infinite Loop Guard',
-    description: 'Prevent infinite loops from crashing your application with smart loop analysis.',
-    price: '24.99',
-    image: 'https://placehold.co/300x200?text=Loop+Guard',
-    category: 'Error Protection'
-  },
-  {
-    name: 'Undefined Variable Protector',
-    description: 'Identify and fix undefined variables before they cause runtime errors.',
-    price: '29.99',
-    image: 'https://placehold.co/300x200?text=Variable+Protector',
-    category: 'Error Protection'
-  },
-  {
-    name: 'CSS Conflict Resolver',
-    description: 'Resolve CSS conflicts and ensure your styles apply correctly.',
-    price: '15.99',
-    image: 'https://placehold.co/300x200?text=CSS+Resolver',
-    category: 'Styling Repair'
-  },
-  {
-    name: 'Callback Hell Rescuer',
-    description: 'Transform nested callbacks into clean, readable async/await code.',
-    price: '34.99',
-    image: 'https://placehold.co/300x200?text=Callback+Rescuer',
-    category: 'Code Quality'
-  },
-  {
-    name: 'Memory Leak Fixer',
-    description: 'Detect and fix memory leaks to keep your application running smoothly.',
-    price: '49.99',
-    image: 'https://placehold.co/300x200?text=Memory+Fixer',
-    category: 'Performance Repair'
-  },
-  {
-    name: 'Code Formatter',
-    description: 'Automatically format your code to improve readability and maintain consistency.',
-    price: '9.99',
-    image: 'https://placehold.co/300x200?text=Code+Formatter',
-    category: 'Code Quality'
-  },
-  {
-    name: 'Error Logger',
-    description: 'Log errors with detailed stack traces to help you debug faster.',
-    price: '14.99',
-    image: 'https://placehold.co/300x200?text=Error+Logger',
-    category: 'Debugging Tools'
-  },
-  {
-    name: 'Performance Profiler',
-    description: 'Profile your application to find performance bottlenecks.',
-    price: '39.99',
-    image: 'https://placehold.co/300x200?text=Performance+Profiler',
-    category: 'Performance Repair'
-  },
-  {
-    name: 'Security Scanner',
-    description: 'Scan your code for security vulnerabilities.',
-    price: '59.99',
-    image: 'https://placehold.co/300x200?text=Security+Scanner',
-    category: 'Security'
-  },
-  {
-    name: 'Accessibility Checker',
-    description: 'Ensure your web applications are accessible to all users.',
-    price: '19.99',
-    image: 'https://placehold.co/300x200?text=Accessibility+Checker',
-    category: 'Accessibility'
-  },
-  {
-    name: 'Responsive Design Tester',
-    description: 'Test your website on different screen sizes and devices.',
-    price: '29.99',
-    image: 'https://placehold.co/300x200?text=Responsive+Tester',
-    category: 'Design Tools'
-  },
-  {
-    name: 'Unit Test Generator',
-    description: 'Generate unit tests for your functions automatically.',
-    price: '24.99',
-    image: 'https://placehold.co/300x200?text=Unit+Test+Generator',
-    category: 'Testing Tools'
-  },
-  {
-    name: 'Code Complexity Analyzer',
-    description: 'Analyze your code to find complex and hard-to-maintain areas.',
-    price: '19.99',
-    image: 'https://placehold.co/300x200?text=Complexity+Analyzer',
-    category: 'Code Quality'
-  },
-  {
-    name: 'Dependency Checker',
-    description: 'Check for outdated or vulnerable dependencies in your project.',
-    price: '14.99',
-    image: 'https://placehold.co/300x200?text=Dependency+Checker',
-    category: 'Security'
-  },
-  {
-    name: 'Code Coverage Reporter',
-    description: 'Generate reports to see how much of your code is covered by tests.',
-    price: '29.99',
-    image: 'https://placehold.co/300x200?text=Coverage+Reporter',
-    category: 'Testing Tools'
-  },
-  {
-    name: 'API Mocking Tool',
-    description: 'Mock APIs to test your application without hitting the real endpoints.',
-    price: '34.99',
-    image: 'https://placehold.co/300x200?text=API+Mocking+Tool',
-    category: 'Testing Tools'
-  },
-  {
-    name: 'Data Migration Assistant',
-    description: 'Assist in migrating data between different databases.',
-    price: '49.99',
-    image: 'https://placehold.co/300x200?text=Migration+Assistant',
-    category: 'Database Tools'
-  },
-  {
-    name: 'GraphQL Explorer',
-    description: 'Explore and test your GraphQL APIs with ease.',
-    price: '19.99',
-    image: 'https://placehold.co/300x200?text=GraphQL+Explorer',
-    category: 'API Tools'
-  },
-  {
-    name: 'Docker Image Optimizer',
-    description: 'Optimize your Docker images to reduce size and improve performance.',
-    price: '39.99',
-    image: 'https://placehold.co/300x200?text=Docker+Optimizer',
-    category: 'DevOps Tools'
-  },
-  {
-    name: 'Continuous Integration Setup',
-    description: 'Set up continuous integration pipelines for your projects.',
-    price: '59.99',
-    image: 'https://placehold.co/300x200?text=CI+Setup',
-    category: 'DevOps Tools'
-  },
-  {
-    name: 'Load Testing Suite',
-    description: 'Test your application under heavy load to ensure stability.',
-    price: '49.99',
-    image: 'https://placehold.co/300x200?text=Load+Testing+Suite',
-    category: 'Performance Repair'
-  },
-  {
-    name: 'Version Control Helper',
-    description: 'Manage your version control systems more effectively.',
-    price: '19.99',
-    image: 'https://placehold.co/300x200?text=Version+Control+Helper',
-    category: 'DevOps Tools'
-  },
-  {
-    name: 'Static Site Generator',
-    description: 'Generate static sites from your dynamic web applications.',
-    price: '29.99',
-    image: 'https://placehold.co/300x200?text=Static+Site+Generator',
-    category: 'Web Development'
-  },
-  {
-    name: 'SEO Optimizer',
-    description: 'Optimize your website for search engines to improve visibility.',
-    price: '39.99',
-    image: 'https://placehold.co/300x200?text=SEO+Optimizer',
-    category: 'Marketing Tools'
-  },
-  {
-    name: 'Email Campaign Manager',
-    description: 'Manage and automate your email marketing campaigns.',
-    price: '44.99',
-    image: 'https://placehold.co/300x200?text=Email+Campaign+Manager',
-    category: 'Marketing Tools'
-  },
-];
+// CSV parser utilities (no external deps)
+function splitCsvLine(line) {
+  const out = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        cur += '"';
+        i++; // skip escaped quote
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === ',' && !inQuotes) {
+      out.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+function unquote(field) {
+  const trimmed = field.trim();
+  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    return trimmed.slice(1, -1).replace(/""/g, '"');
+  }
+  return trimmed;
+}
+
+function loadProductsFromCsv(csvPath) {
+  if (!fs.existsSync(csvPath)) return null;
+  const raw = fs.readFileSync(csvPath, 'utf8');
+  const lines = raw.split(/\r?\n/).filter(l => l.trim().length > 0);
+  if (lines.length < 2) return [];
+  const headers = splitCsvLine(lines[0]).map(unquote);
+  const idx = {
+    name: headers.indexOf('name'),
+    description: headers.indexOf('description'),
+    price: headers.indexOf('price'),
+    image: headers.indexOf('image'),
+    category: headers.indexOf('category'),
+  };
+
+  const products = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCsvLine(lines[i]).map(unquote);
+    const name = cols[idx.name];
+    const description = cols[idx.description];
+    const price = cols[idx.price];
+    const image = cols[idx.image];
+    const category = cols[idx.category];
+    if (!name || !description || !price || !image) continue;
+    products.push({ name, description, price, image, category });
+  }
+  return products;
+}
+
+// Prefer CSV-sourced products; fall back to static sample array if missing
+const csvPath = path.join(__dirname, 'products.csv');
+const sampleProducts = loadProductsFromCsv(csvPath) || [];
 
 // Create a new PostgreSQL client
 const client = new Client({
@@ -202,6 +83,11 @@ async function insertProducts() {
   try {
     await client.connect();
     console.log('Connected to the database');
+
+    if (!sampleProducts.length) {
+      console.warn('No products loaded from CSV. Nothing to insert.');
+      return;
+    }
 
     for (const product of sampleProducts) {
       const { name, description, price, image, category } = product;

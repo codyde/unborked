@@ -16,8 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/cli": "^2.43.0",
-    "@sentry/node": "^9.12.0",
-    "@sentry/profiling-node": "^9.12.0",
+    "@sentry/node": "^10.10.0",
+    "@sentry/profiling-node": "^9.46.0",
     "@types/bcrypt": "^5.0.2",
     "@types/pg": "^8.11.11",
     "bcrypt": "^5.1.1",

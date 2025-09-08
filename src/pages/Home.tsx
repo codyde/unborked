@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
 import { productService } from '../services/api';
+import AdvancedSearch from '../components/AdvancedSearch';
+import { useFeatureFlags } from '../context/FeatureFlagsContext';
 
 function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { flags } = useFeatureFlags();
 
   const fetchProducts = async () => {
     try {
@@ -59,6 +62,11 @@ function Home() {
         <h2 className="text-3xl font-bold text-center mb-12">
           Featured Products
         </h2>
+        {flags.ADVANCED_FILTERING && (
+          <div className="max-w-3xl mx-auto">
+            <AdvancedSearch />
+          </div>
+        )}
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-500"></div>

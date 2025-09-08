@@ -5,6 +5,9 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { purchaseService } from '../services/api';
 import * as Sentry from '@sentry/react';
+import { useFeatureFlags } from '../context/FeatureFlagsContext';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const { debug, info, warn, error, fmt } = Sentry.logger;
 
@@ -16,6 +19,7 @@ function Cart() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<number | null>(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const { flags } = useFeatureFlags();
 
   const updateQuantity = (id: string, quantity: number) => {
     info(fmt`Updating quantity for item ID: ${id} to ${quantity}`);
@@ -91,6 +95,44 @@ function Cart() {
     }
   };
 
+  const handleOneClickCheckout = async () => {
+    info('BorkedPay one-click checkout initiated');
+    if (!isAuthenticated) {
+      warn('One-click failed: User not authenticated.');
+      navigate('/login', { state: { from: '/cart' } });
+      return;
+    }
+    setIsCheckingOut(true);
+    setCheckoutError(null);
+    try {
+      const formattedItems = state.items.map(item => ({
+        productId: typeof item.id === 'string' ? parseInt(item.id) : item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      }));
+
+      const response = await fetch(`${API_BASE_URL}/api/checkout/borkedpay`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ items: formattedItems, total: total.toFixed(2) })
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || response.statusText);
+      }
+    } catch (err: any) {
+      error(fmt`One-click checkout error: ${err.message}`, { stack: err.stack, errorObject: err });
+      setCheckoutError(err.message || 'One-click checkout failed');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
   if (checkoutSuccess) {
     return (
       <div className="max-w-7xl mx-auto py-16 px-4">
@@ -133,12 +175,20 @@ function Cart() {
     );
   }
 
+  const containerCls = flags.UNBORKED_V2 ? 'max-w-7xl mx-auto py-16 px-4 text-[#00FFF1]' : 'max-w-7xl mx-auto py-16 px-4';
+  const panelCls = flags.UNBORKED_V2
+    ? 'bg-[#0D0221] border border-[#00FFF1] rounded-md p-6 h-fit'
+    : 'bg-white rounded-lg shadow-md p-6 h-fit';
+  const btnPrimaryCls = flags.UNBORKED_V2
+    ? 'w-full mt-6 bg-[#00FFF1] text-[#0D0221] py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#7DF9FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+    : 'w-full mt-6 bg-[#1a1a2e] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+
   return (
-    <div className="max-w-7xl mx-auto py-16 px-4">
+    <div className={containerCls}>
       <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
       
       {checkoutError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 flex items-center">
+        <div className={flags.UNBORKED_V2 ? 'border border-[#FF003C] text-[#FF003C] px-4 py-3 rounded mb-6 flex items-center bg-transparent' : 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 flex items-center'}>
           <AlertTriangle className="w-5 h-5 mr-2" />
           <span>{checkoutError}</span>
         </div>
@@ -149,7 +199,7 @@ function Cart() {
           {state.items.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow-md p-6 mb-4 flex items-center"
+              className={flags.UNBORKED_V2 ? 'rounded-md border border-[#00FFF1] p-6 mb-4 flex items-center bg-[#0D0221] text-[#00FFF1]' : 'bg-white rounded-lg shadow-md p-6 mb-4 flex items-center'}
               data-testid="cart-item"
             >
               <img
@@ -158,28 +208,28 @@ function Cart() {
                 className="w-24 h-24 object-cover rounded"
               />
               <div className="ml-6 grow">
-                <h3 className="text-lg font-semibold">{item.name}</h3>
-                <p className="text-gray-600">${item.price}</p>
+                <h3 className={flags.UNBORKED_V2 ? 'text-lg font-semibold text-[#00FFF1]' : 'text-lg font-semibold'}>{item.name}</h3>
+                <p className={flags.UNBORKED_V2 ? 'text-[#7DF9FF]' : 'text-gray-600'}>${item.price}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity - 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className={flags.UNBORKED_V2 ? 'p-1 hover:text-[#FF003C]' : 'p-1 hover:text-[#39ff14]'}
                   >
                     <Minus className="w-4 h-4" />
                   </button>
                   <span className="w-8 text-center">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id.toString(), item.quantity + 1)}
-                    className="p-1 hover:text-[#39ff14]"
+                    className={flags.UNBORKED_V2 ? 'p-1 hover:text-[#FF003C]' : 'p-1 hover:text-[#39ff14]'}
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
                 <button
                   onClick={() => removeItem(item.id.toString())}
-                  className="text-red-500 hover:text-red-700"
+                  className={flags.UNBORKED_V2 ? 'text-[#FF003C] hover:text-[#ff315a]' : 'text-red-500 hover:text-red-700'}
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -188,7 +238,7 @@ function Cart() {
           ))}
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 h-fit">
+        <div className={panelCls}>
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
           <div className="space-y-3">
             <div className="flex justify-between">
@@ -210,11 +260,21 @@ function Cart() {
             onClick={handleCheckout}
             disabled={isCheckingOut}
             data-testid="checkout-button"
-            className="w-full mt-6 bg-[#1a1a2e] text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#39ff14] hover:text-[#1a1a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className={btnPrimaryCls}
           >
             <CreditCard className="w-5 h-5" />
             <span>{isCheckingOut ? 'Processing...' : 'Checkout'}</span>
           </button>
+
+          {flags.EXPERIMENTAL_CHECKOUT && (
+            <button
+              onClick={handleOneClickCheckout}
+              disabled={isCheckingOut}
+              className={flags.UNBORKED_V2 ? 'w-full mt-3 bg-[#FF003C] text-white py-3 rounded-lg hover:bg-[#ff315a] transition-colors disabled:opacity-50' : 'w-full mt-3 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50'}
+            >
+              One‑Click with BorkedPay
+            </button>
+          )}
         </div>
       </div>
     </div>

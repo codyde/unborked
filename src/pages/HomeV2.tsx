@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Product } from '../types';
 import { productService } from '../services/api';
 import { CyberpunkHero, CyberpunkCard, CyberpunkFeaturedProducts } from '../components/v2';
+import AdvancedSearch from '../components/AdvancedSearch';
+import { useFeatureFlags } from '../context/FeatureFlagsContext';
 import { useNavigate } from 'react-router-dom';
 
 function HomeV2() {
@@ -9,6 +11,7 @@ function HomeV2() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { flags } = useFeatureFlags();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,6 +52,11 @@ function HomeV2() {
       <CyberpunkHero />
 
       {/* Show products using the cyberpunk card components */}
+      {flags.ADVANCED_FILTERING && (
+        <div className="container mx-auto px-6 mt-6">
+          <AdvancedSearch />
+        </div>
+      )}
       {loading ? (
         <div className="flex justify-center items-center h-64 mt-8">
           <div className="relative w-16 h-16">
